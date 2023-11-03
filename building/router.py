@@ -1,19 +1,20 @@
 from fastapi import APIRouter, Response, status, Depends
 from building.service import BuildingService
-from building.constants import GET_METHOD_DEFINITION
-from building.dependencies import dp_building_col
+import building.constants as cst 
+from building.dependencies import dp_building_col, dp_valid_building
 from motor.motor_asyncio import AsyncIOMotorCollection
 import json
 from pydantic.json import pydantic_encoder
 from core.log import logger
+from building.models import BuildingModel
 
 building_router = APIRouter(prefix='/building', tags=['Building'])
 
-@building_router.get('/', **GET_METHOD_DEFINITION)
-async def get(
-  building_collection: AsyncIOMotorCollection = Depends(dp_building_col)
+@building_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
+async def gets(
+  building_col: AsyncIOMotorCollection = Depends(dp_building_col)
 ):
-  buildings = await BuildingService(building_collection).list_buildings()
+  buildings = await BuildingService(building_col).list_buildings()
   buildings_json = json.dumps(buildings, default=pydantic_encoder)
   logger.debug(buildings_json)
 
@@ -22,14 +23,39 @@ async def get(
     status_code = status.HTTP_200_OK
   )
   
-@building_router.post('/', **GET_METHOD_DEFINITION)
-async def post( building_collection: AsyncIOMotorCollection = Depends(dp_building_col)):
-  pass
+@building_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
+async def get(
+  id: str,
+  building: BuildingModel | None = Depends(dp_valid_building),
+):
+  building_json = json.dumps(building, default=pydantic_encoder)
+  logger.debug(building_json)
 
-@building_router.put('/', **GET_METHOD_DEFINITION)
-async def put( building_collection: AsyncIOMotorCollection = Depends(dp_building_col)):
-  pass
+  return Response(
+    content = building_json,
+    status_code = status.HTTP_200_OK
+  )
+  
+@building_router.post('/{id}', **cst.POST_ENDPOINT_DEFINITION)
+async def post(
+  id: str,
+  building: BuildingModel | None = Depends(dp_valid_building),
+  building_col: AsyncIOMotorCollection = Depends(dp_building_col)
+):
+  return Response()
 
-@building_router.delete('/', **GET_METHOD_DEFINITION)
-async def delete( building_collection: AsyncIOMotorCollection = Depends(dp_building_col)):
-  pass
+@building_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
+async def put(
+  id: str,
+  building: BuildingModel | None = Depends(dp_valid_building),
+  building_col: AsyncIOMotorCollection = Depends(dp_building_col)
+):
+  return Response()
+
+@building_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
+async def delete(
+  id: str,
+  building: BuildingModel | None = Depends(dp_valid_building),
+  building_col: AsyncIOMotorCollection = Depends(dp_building_col)
+):
+  return Response()
