@@ -1,14 +1,14 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
-import core.db
+
+from building.router import building_router
 
 load_dotenv()
 
 app = FastAPI( 
-  # openapi_url='/docs',
   title='UNI Campus - API', 
   version='0.3.1'
 )
@@ -21,11 +21,19 @@ app.add_middleware(
   allow_headers=["*"]
 )
 
-@app.get("/", tags=['Root'])
+api_router = APIRouter(prefix='/api')
+
+
+@api_router.get("/", tags=['Root'])
 async def root(
 ) -> dict:
   """Test Endpoint"""
   return { "message": "UNI Campus - API" }
+
+api_router.include_router(building_router)
+
+app.include_router(api_router)
+
 
 if __name__ == "__main__":
   uvicorn.run(
