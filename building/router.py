@@ -5,6 +5,7 @@ from building.dependencies import dp_building_col
 from motor.motor_asyncio import AsyncIOMotorCollection
 import json
 from pydantic.json import pydantic_encoder
+from core.log import logger
 
 building_router = APIRouter(prefix='/building', tags=['Building'])
 
@@ -13,10 +14,12 @@ async def get(
   building_collection: AsyncIOMotorCollection = Depends(dp_building_col)
 ):
   buildings = await BuildingService(building_collection).list_buildings()
-  print(buildings)
+  buildings_json = json.dumps(buildings, default=pydantic_encoder)
+  logger.debug(buildings_json)
+
   return Response(
-    content=json.dumps(buildings, default=pydantic_encoder),
-    status_code=status.HTTP_200_OK
+    content = buildings_json,
+    status_code = status.HTTP_200_OK
   )
   
 @building_router.post('/', **GET_METHOD_DEFINITION)
