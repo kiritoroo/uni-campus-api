@@ -2,7 +2,7 @@ from motor.motor_asyncio import AsyncIOMotorCollection
 from motor.motor_asyncio import AsyncIOMotorCursor
 from building.models import BuildingModel
 from building.exceptions import BuildingNotFound
-from building.schemas import BuildingCreateSchema
+from building.schemas import BuildingCreateSchema, BuildingUpdateSchema
 from bson import ObjectId
 from datetime import datetime
 
@@ -33,12 +33,34 @@ class BuildingService:
     building = BuildingModel(**building_raw)
     return building
   
-  async def create_building(self, building: BuildingCreateSchema) -> BuildingModel:
+  async def create_building(self, data: BuildingCreateSchema) -> BuildingModel:
     create_data = dict(
-      **building.model_dump(exclude_none=True),
+      **data.model_dump(exclude_none=True),
       created_at=datetime.utcnow(),
       updated_at=datetime.utcnow()
     )
     result = await self.building_col.insert_one(document=create_data)
     building = BuildingModel(id=result.inserted_id, **create_data)
+    return building
+
+  async def update_building(self, id: str, data: BuildingUpdateSchema) -> BuildingModel:
+    await self.get_building_by_id(id)
+
+    update_data = dict(
+      **data.model_dump(exclude_none=True),
+      updated_at=datetime.utcnow()
+    )
+    
+    query = {
+      'filter': {
+        '_id': ObjectId(id)
+      },
+      'update': {
+        '$set': update_data
+      },
+      'return_document': True
+    }
+    building_raw = await self.building_col.find_one_and_update(**query)
+
+    building = BuildingModel(**building_raw)
     return building

@@ -7,7 +7,7 @@ import json
 from pydantic.json import pydantic_encoder
 from core.log import logger
 from building.models import BuildingModel
-from building.schemas import BuildingCreateSchema
+from building.schemas import BuildingCreateSchema, BuildingUpdateSchema
 
 building_router = APIRouter(prefix='/building', tags=['Building'])
 
@@ -54,10 +54,17 @@ async def post(
 @building_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
   id: str,
-  building: BuildingModel | None = Depends(dp_valid_building),
+  body: BuildingUpdateSchema,
   building_col: AsyncIOMotorCollection = Depends(dp_building_col)
 ):
-  return Response()
+  building = await BuildingService(building_col).update_building(id, body)
+  building_json = json.dumps(building, default=pydantic_encoder)
+  logger.debug(building_json)
+  
+  return Response(
+    content=building_json,
+    status_code=status.HTTP_200_OK
+  )
 
 @building_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(

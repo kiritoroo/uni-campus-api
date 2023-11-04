@@ -1,13 +1,14 @@
 from pydantic import BaseModel, Field
-from typing import Optional
 from models import Vector3Model
 
-class BuildingCreateSchema(BaseModel):
+class BuildingUpdateSchema(BaseModel):
   name: str = Field(...)
   space: str
-  file_buffer: str
+  file_url: str
   uses: str
   position: Vector3Model
   rotation: Vector3Model
   scale: Vector3Model
   
+class BuildingCreateSchema(BuildingUpdateSchema):
+  pass

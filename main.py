@@ -22,14 +22,14 @@ async def exit_app():
     loop = asyncio.get_running_loop()
     loop.stop()
 
-@app.on_event('shutdown')
-def shutdown_event():
-    print('Shutting down...!')
+# @app.on_event('shutdown')
+# def shutdown_event():
+#     print('Shutting down...!')
     
-@app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(request, exc):
-    task = BackgroundTask(exit_app)
-    return PlainTextResponse(str(exc.detail), status_code=exc.status_code, background=task)
+# @app.exception_handler(StarletteHTTPException)
+# async def http_exception_handler(request, exc):
+#     task = BackgroundTask(exit_app)
+#     return PlainTextResponse(str(exc.detail), status_code=exc.status_code, background=task)
 
 app.add_middleware(
   CORSMiddleware,

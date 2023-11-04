@@ -7,7 +7,7 @@ class BuildingModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
   name: str = Field(..., title="Building name")
   space: Optional[str] = None
-  file_buffer: Optional[str] = None
+  file_url: Optional[str] = None
   uses: Optional[str] = None
   position: Optional[Vector3Model] = None
   rotation: Optional[Vector3Model] = None
@@ -20,10 +20,10 @@ class BuildingModel(BaseModel):
     arbitrary_types_allowed=True,
     json_schema_extra={
       "example": {
-        "id": "65454e11fb75a3926d6c790d",
+        "id": "65462fa907344798a6a7b4bf",
         "name": "Building Center",
         "space": "Office",
-        "file_buffer": "aws s3",
+        "file_url": "aws s3",
         "uses": "Multi purpose",
         "position": {"x": 0.0, "y": 0.0, "z": 0.0},
         "rotation": {"x": 0.0, "y": 0.0, "z": 0.0},
