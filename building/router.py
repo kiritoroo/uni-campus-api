@@ -8,6 +8,7 @@ from pydantic.json import pydantic_encoder
 from core.log import logger
 from building.models import BuildingModel
 from building.schemas import BuildingCreateSchema, BuildingUpdateSchema
+from exceptions import InternalServerException
 
 building_router = APIRouter(prefix='/building', tags=['Building'])
 
@@ -69,7 +70,13 @@ async def put(
 @building_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
   id: str,
-  building: BuildingModel | None = Depends(dp_valid_building),
   building_col: AsyncIOMotorCollection = Depends(dp_building_col)
 ):
-  return Response()
+  success = await BuildingService(building_col).delete_building(id)
+
+  if not success:
+    raise InternalServerException()
+
+  return Response(
+    status_code=status.HTTP_204_NO_CONTENT
+  )

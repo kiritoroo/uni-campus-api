@@ -64,3 +64,15 @@ class BuildingService:
 
     building = BuildingModel(**building_raw)
     return building
+
+  async def delete_building(self, id: str) -> bool:
+    await self.get_building_by_id(id)
+    
+    query = {
+      'filter': {
+        '_id': ObjectId(id)
+      }
+    }
+    result = await self.building_col.delete_one(**query)
+    return True if result.deleted_count else False
+
