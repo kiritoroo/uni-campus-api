@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Response, status, Depends, File, UploadFile
+from fastapi import APIRouter, Response, status, Depends, File, UploadFile, Path
 from building.service import BuildingService
 import building.constants as cst 
-from building.dependencies import dp_building_col, dp_valid_building, dp_handle_building_create_form
+from building.dependencies import dp_building_col, dp_valid_building, dp_handle_building_create_form, dp_handle_building_remove
 from motor.motor_asyncio import AsyncIOMotorCollection
 import json
 from pydantic.json import pydantic_encoder
@@ -71,8 +71,10 @@ async def put(
 
 @building_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
-  id: str,
-  building_col: AsyncIOMotorCollection = Depends(dp_building_col)
+  id: Annotated[str, Path],
+  building: Annotated[BuildingModel | None, Depends(dp_valid_building)],
+  deleted: Annotated[bool, Depends(dp_handle_building_remove)],
+  building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)]
 ):
   success = await BuildingService(building_col).delete_building(id)
 

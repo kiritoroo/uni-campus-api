@@ -66,8 +66,6 @@ class BuildingService:
     return building
 
   async def delete_building(self, id: str) -> bool:
-    await self.get_building_by_id(id)
-    
     query = {
       'filter': {
         '_id': ObjectId(id)

@@ -55,10 +55,28 @@ async def dp_handle_building_create_form(form: Annotated[BuildingCreateFormSchem
       position=json.loads(form.position),
       rotation=json.loads(form.rotation),
       scale=json.loads(form.scale),
-      model_url=f"/{model_file_location}",
-      preview_url=f"/{preview_file_location}"
+      model_url=f"{model_file_location}",
+      preview_url=f"{preview_file_location}"
     )
     
     return schema
   except json.JSONDecodeError as e:
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+
+async def dp_handle_building_remove(building: BuildingModel | None = Depends(dp_valid_building)) -> bool:
+  try:
+    if os.path.exists(building.model_url):
+      os.remove(building.model_url)
+      logger.debug({"info": f"file '{building.model_url}' removed"})
+    else:
+      logger.warning({"info": f"file '{building.model_url}' not found"})
+
+    if os.path.exists(building.preview_url):
+      os.remove(building.preview_url)
+      logger.debug({"info": f"file '{building.preview_url}' removed"})
+    else:
+      logger.warning({"info": f"file '{building.preview_url}' not found"})
+
+    return True
+  except Exception as e:
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Sometime with error")
