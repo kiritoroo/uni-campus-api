@@ -1,8 +1,8 @@
 from typing import Any
 from typing import Annotated, Union
 from bson import ObjectId
-from pydantic import PlainSerializer, AfterValidator, WithJsonSchema
-from pydantic import BaseModel
+from pydantic import BaseModel, PlainSerializer, AfterValidator, WithJsonSchema, model_validator
+import json
 
 def validate_object_id(v: Any) -> ObjectId:
   if isinstance(v, ObjectId):
@@ -19,6 +19,14 @@ PyObjectId = Annotated[
 ]
 
 class Vector3Model(BaseModel):
-    x: float
-    y: float
-    z: float
+  x: float
+  y: float
+  z: float
+
+  # @model_validator(mode='before')
+  # @classmethod
+  # def validate_to_json(cls, value):
+  #   if isinstance(value, str):
+  #     return cls(**json.loads(value))
+  #   return value
+  
