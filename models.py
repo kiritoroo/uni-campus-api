@@ -23,10 +23,24 @@ class Vector3Model(BaseModel):
   y: float
   z: float
 
-  # @model_validator(mode='before')
-  # @classmethod
-  # def validate_to_json(cls, value):
-  #   if isinstance(value, str):
-  #     return cls(**json.loads(value))
-  #   return value
+  @model_validator(mode='before')
+  @classmethod
+  def validate_to_json(cls, value):
+    if isinstance(value, str):
+      return cls(**json.loads(value))
+    return value
   
+class FileInfoModel(BaseModel):
+  id: str
+  url: str
+  filename: str
+  extension: str
+  length: float
+  content_type: str
+  
+  @model_validator(mode='before')
+  @classmethod
+  def validate_to_json(cls, value):
+    if isinstance(value, str):
+      return cls(**json.loads(value))
+    return value

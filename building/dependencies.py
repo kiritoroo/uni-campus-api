@@ -14,6 +14,7 @@ import os
 from datetime import datetime
 import uuid
 from core.log import logger
+from models import FileInfoModel
 
 building_col = campus_db.get_collection("building")
 
@@ -55,8 +56,22 @@ async def dp_handle_building_create_form(form: Annotated[BuildingCreateFormSchem
       position=json.loads(form.position),
       rotation=json.loads(form.rotation),
       scale=json.loads(form.scale),
-      model_url=f"{model_file_location}",
-      preview_url=f"{preview_file_location}"
+      model_3d=FileInfoModel(
+        id=model_file_id,
+        url=model_file_location,
+        filename=f"{model_file_id}{model_file_extension}",
+        extension=model_file_extension,
+        length=form.model_file.size,
+        content_type=form.model_file.content_type
+      ),
+      preview_img=FileInfoModel(
+        id=preview_file_id,
+        url=preview_file_location,
+        filename=f"{preview_file_id}{preview_file_extension}",
+        extension=preview_file_extension,
+        length=form.preview_file.size,
+        content_type=form.preview_file.content_type
+      )
     )
     
     return schema

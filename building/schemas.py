@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, model_validator, create_model
-from models import Vector3Model
+from models import Vector3Model, FileInfoModel
 import json
 from fastapi import Form, File, UploadFile
 from core.log import logger
@@ -12,8 +12,8 @@ class BuildingUpdateSchema(BaseModel):
   position: Vector3Model
   rotation:  Vector3Model
   scale:  Vector3Model
-  model_url: str
-  preview_url: str
+  model_3d: FileInfoModel
+  preview_img: FileInfoModel
 
 class BuildingCreateSchema(BaseModel):
   name: str
@@ -22,8 +22,8 @@ class BuildingCreateSchema(BaseModel):
   position: Vector3Model
   rotation:  Vector3Model
   scale:  Vector3Model
-  model_url: str
-  preview_url: str
+  model_3d: FileInfoModel
+  preview_img: FileInfoModel
 
 class BuildingCreateFormSchema(BaseModel):
   name: str

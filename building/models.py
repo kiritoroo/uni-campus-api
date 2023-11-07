@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-from models import PyObjectId, Vector3Model
+from models import PyObjectId, Vector3Model, FileInfoModel
 from datetime import datetime
 
 class BuildingModel(BaseModel):
@@ -8,8 +8,8 @@ class BuildingModel(BaseModel):
   name: str = Field(..., title="Building name")
   space_id: Optional[str] = None
   uses: Optional[str] = None
-  model_url: Optional[str] = None
-  preview_url: Optional[str] = None
+  model_3d: Optional[FileInfoModel] = None
+  preview_img: Optional[FileInfoModel] = None
   position: Optional[Vector3Model] = None
   rotation: Optional[Vector3Model] = None
   scale: Optional[Vector3Model] = None
@@ -25,8 +25,8 @@ class BuildingModel(BaseModel):
         "name": "Building Center",
         "space_id": "Office",
         "uses": "Multi purpose",
-        "model_url": "aws s3",
-        "preview_url": "aws s3",
+        "model_3d": {"url": "abc.glb", "extension": ".glb", "length": 100, "content_type": "application/octet-stream"},
+        "preview_img": {"url": "abc.webp", "extension": ".webp", "length": 100, "content_type": "image/webp"},
         "position": {"x": 0.0, "y": 0.0, "z": 0.0},
         "rotation": {"x": 0.0, "y": 0.0, "z": 0.0},
         "scale": {"x": 0.0, "y": 0.0, "z": 0.0},

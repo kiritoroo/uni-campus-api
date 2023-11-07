@@ -5,7 +5,7 @@ import core.log as log
 import os
 
 conn_str = os.environ.get('MONGODB_URL')
-client = motor.motor_asyncio.AsyncIOMotorClient(conn_str, server_api=ServerApi('1'))
+client = motor.motor_asyncio.AsyncIOMotorClient(conn_str)
 
 campus_db = client.get_database("campus_db")
 
