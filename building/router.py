@@ -42,6 +42,7 @@ async def get(
   
 @building_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
+  background_tasks: BackgroundTasks,
   form: Annotated[BuildingCreateFormSchema, Depends()],
   building_create_data: Annotated[BuildingCreateSchema, Depends(dp_handle_building_create)],
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)]
@@ -52,7 +53,8 @@ async def post(
 
   return Response(
     content=res_building_json,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
+    background=background_tasks
   )
 
 @building_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
@@ -64,12 +66,12 @@ async def put(
   building_update_data: Annotated[BuildingUpdateSchema, Depends(dp_handle_building_update)],
   building_col: AsyncIOMotorCollection = Depends(dp_building_col)
 ):
-  # building = await BuildingService(building_col).update_building(id, body)
-  # building_json = json.dumps(building, default=pydantic_encoder)
-  # logger.debug(building_json)
+  res_building = await BuildingService(building_col).update_building(building_draft, building_update_data)
+  res_building_json = json.dumps(res_building, default=pydantic_encoder)
+  logger.debug(res_building_json)
   
   return Response(
-    content="ok",
+    content=res_building_json,
     status_code=status.HTTP_200_OK,
     background=background_tasks
   )

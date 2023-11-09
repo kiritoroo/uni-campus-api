@@ -43,17 +43,16 @@ class BuildingService:
     building = BuildingModel(id=result.inserted_id, **create_data)
     return building
 
-  async def update_building(self, id: str, data: BuildingUpdateSchema) -> BuildingModel:
-    await self.get_building_by_id(id)
-
+  async def update_building(self, draft: BuildingModel, data: BuildingUpdateSchema) -> BuildingModel:
     update_data = dict(
       **data.model_dump(exclude_none=True),
+      **{k: v for k, v in draft.model_dump(exclude_none=True, exclude=['id','updated_at']).items() if k not in data.model_dump()},
       updated_at=datetime.utcnow()
     )
     
     query = {
       'filter': {
-        '_id': ObjectId(id)
+        '_id': ObjectId(draft.id)
       },
       'update': {
         '$set': update_data
