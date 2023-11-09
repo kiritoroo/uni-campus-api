@@ -3,9 +3,12 @@ import motor.motor_asyncio
 from pymongo.server_api import ServerApi
 import core.log as log
 import os
+import certifi
+
+ca = certifi.where()
 
 conn_str = os.environ.get('MONGODB_URL')
-client = motor.motor_asyncio.AsyncIOMotorClient(conn_str)
+client = motor.motor_asyncio.AsyncIOMotorClient(conn_str,tls=True,tlsCAFile=ca)
 
 campus_db = client.get_database("campus_db")
 
