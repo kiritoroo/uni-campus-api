@@ -68,6 +68,23 @@ async def root(
 #         child.kill()
 #     parent.kill()
 
+static_folder = "static"
+subs_static_folder = ["images", "models"]
+if not os.path.exists(static_folder):
+  os.makedirs(static_folder)
+  print(f"Dir {static_folder} created.")
+else:
+  print(f"Dir {static_folder} existed.")
+  
+for subfolder in subs_static_folder:
+  subfolder_path = os.path.join(static_folder, subfolder)
+  if not os.path.exists(subfolder_path):
+    os.makedirs(subfolder_path)
+    print(f"Dir {subfolder_path} created.")
+  else:
+    print(f"Dir {subfolder_path} existed.")
+    
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
     
 api_router.include_router(building_router)
@@ -80,5 +97,5 @@ if __name__ == "__main__":
     host=os.environ.get('DOMAIN'),
     port=int(os.environ.get('PORT')),
     log_level="info",
-    reload=False
+    reload=True
   )
