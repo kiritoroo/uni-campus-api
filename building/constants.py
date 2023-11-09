@@ -5,7 +5,7 @@ GETS_ENDPOINT_DEFINITION = {
   'status_code': status.HTTP_200_OK,
   'description': "List buildings",
   'response_description': "Get buildings list success",
-  'response_model': BuildingModel,
+  'response_model': list[BuildingModel],
 }
 
 GET_ENDPOINT_DEFINITION = {

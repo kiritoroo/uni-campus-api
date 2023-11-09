@@ -6,7 +6,7 @@ from fastapi import Depends, HTTPException, status
 from building.service import BuildingService
 from motor.motor_asyncio import AsyncIOMotorCollection
 from core.log import logger
-from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema
+from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, BuildingUpdateFormSchema, BuildingUpdateSchema
 from typing_extensions import Annotated
 import json
 import aiofiles
@@ -15,6 +15,8 @@ from datetime import datetime
 import uuid
 from core.log import logger
 from models import FileInfoModel
+from starlette.background import BackgroundTasks
+from utils import write_file
 
 building_col = campus_db.get_collection("building")
 
@@ -25,12 +27,9 @@ async def dp_valid_building(id: str, building_col: AsyncIOMotorCollection = Depe
   building = await BuildingService(building_col).get_building_by_id(id)
   return building
   
-async def dp_handle_building_create_form(form: Annotated[BuildingCreateFormSchema, Depends()]) -> BuildingCreateSchema:
-  current_datetime = datetime.now()
-
+async def dp_handle_building_create(form: Annotated[BuildingCreateFormSchema, Depends()]) -> BuildingCreateSchema:
   try:
     model_file_id = str(uuid.uuid4())
-    model_filename = os.path.splitext(form.model_file.filename)[0]
     model_file_extension = os.path.splitext(form.model_file.filename)[-1]
     model_file_location = f"static/models/{model_file_id}{model_file_extension}"
 
@@ -40,7 +39,6 @@ async def dp_handle_building_create_form(form: Annotated[BuildingCreateFormSchem
 
 
     preview_file_id = str(uuid.uuid4())
-    preview_filename = os.path.splitext(form.preview_file.filename)[0]
     preview_file_extension = os.path.splitext(form.preview_file.filename)[-1]
     preview_file_location = f"static/images/{preview_file_id}{preview_file_extension}"
 
@@ -75,20 +73,45 @@ async def dp_handle_building_create_form(form: Annotated[BuildingCreateFormSchem
     )
     
     return schema
-  except json.JSONDecodeError as e:
+  except Exception as e:
     logger.error(e)
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
 
-async def dp_handle_building_remove(building: BuildingModel | None = Depends(dp_valid_building)) -> bool:
+async def dp_handle_building_update(
+  building_draft: Annotated[BuildingModel | None, Depends(dp_valid_building)],
+  form: Annotated[BuildingUpdateFormSchema, Depends()],
+  background_tasks: BackgroundTasks
+) -> BuildingUpdateSchema:
+  try:
+    if form.model_file:
+      if building_draft.model_3d:
+        background_tasks.add_task(os.remove, building_draft.model_3d.url)
+
+      model_file_id = str(uuid.uuid4())
+      model_file_extension = os.path.splitext(form.model_file.filename)[-1]
+      model_file_location = f"static/models/{model_file_id}{model_file_extension}"
+
+      background_tasks.add_task(write_file, form.model_file, model_file_location)
+
+
+  except Exception as e:
+    logger.error(e)
+    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+
+
+async def dp_handle_building_remove(
+  building: Annotated[BuildingModel | None, Depends(dp_valid_building)],
+  background_tasks: BackgroundTasks
+) -> bool:
   try:
     if os.path.exists(building.model_3d.url):
-      os.remove(building.model_3d.url)
+      background_tasks.add_task(os.remove, building.model_3d.url)
       logger.debug({"info": f"file '{building.model_3d.url}' removed"})
     else:
       logger.warning({"info": f"file '{building.model_3d.url}' not found"})
 
     if os.path.exists(building.preview_img.url):
-      os.remove(building.preview_img.url)
+      background_tasks.add_task(os.remove, building.preview_img.url)
       logger.debug({"info": f"file '{building.preview_img.url}' removed"})
     else:
       logger.warning({"info": f"file '{building.preview_img.url}' not found"})
