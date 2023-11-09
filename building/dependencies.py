@@ -76,22 +76,24 @@ async def dp_handle_building_create_form(form: Annotated[BuildingCreateFormSchem
     
     return schema
   except json.JSONDecodeError as e:
+    logger.error(e)
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
 
 async def dp_handle_building_remove(building: BuildingModel | None = Depends(dp_valid_building)) -> bool:
   try:
-    if os.path.exists(building.model_url):
-      os.remove(building.model_url)
-      logger.debug({"info": f"file '{building.model_url}' removed"})
+    if os.path.exists(building.model_3d.url):
+      os.remove(building.model_3d.url)
+      logger.debug({"info": f"file '{building.model_3d.url}' removed"})
     else:
-      logger.warning({"info": f"file '{building.model_url}' not found"})
+      logger.warning({"info": f"file '{building.model_3d.url}' not found"})
 
-    if os.path.exists(building.preview_url):
-      os.remove(building.preview_url)
-      logger.debug({"info": f"file '{building.preview_url}' removed"})
+    if os.path.exists(building.preview_img.url):
+      os.remove(building.preview_img.url)
+      logger.debug({"info": f"file '{building.preview_img.url}' removed"})
     else:
-      logger.warning({"info": f"file '{building.preview_url}' not found"})
+      logger.warning({"info": f"file '{building.preview_img.url}' not found"})
 
     return True
   except Exception as e:
+    logger.error(e)
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Sometime with error")
