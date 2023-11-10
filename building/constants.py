@@ -10,7 +10,7 @@ GETS_ENDPOINT_DEFINITION = {
 
 GET_ENDPOINT_DEFINITION = {
   'status_code': status.HTTP_200_OK,
-  'description': "List buildings",
+  'description': "Detail buildings",
   'response_description': "Get building success",
   'response_model': BuildingModel,
 }
