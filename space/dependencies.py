@@ -62,14 +62,51 @@ async def dp_handle_space_update(
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
   form: Annotated[SpaceUpdateFormSchema, Depends()]
 ) -> SpaceUpdateSchema:
-  pass
+  icon_file_id = None
+  icon_file_extension = None
+  icon_file_location = None
+
+  try:
+    if form.icon_file:
+      if space_draft.icon:
+        background_tasks.add_task(os.remove, space_draft.icon.url)
+      icon_file_id = str(uuid.uuid4())
+      icon_file_extension = os.path.splitext(form.icon_file.filename)[-1]
+      icon_file_location = f"static/images/{icon_file_id}{icon_file_extension}"
+    
+      background_tasks.add_task(write_file, form.icon_file, icon_file_location)
+      logger.debug({"info": f"file '{form.icon_file.filename}' saved at '{icon_file_location}'"})
+
+    schema = SpaceUpdateSchema(
+      name=form.name,
+      color=form.color.as_hex(),
+        icon=FileInfoModel(
+        id=icon_file_id,
+        url=icon_file_location,
+        filename=f"{icon_file_id}{icon_file_location}",
+        extension=icon_file_location,
+        length=form.icon_file.size,
+        content_type=form.icon_file.content_type
+      ) if form.icon_file else None
+    )
+    
+    return schema
+  except Exception as e:
+    logger.error(e)
+    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
 
 async def dp_handle_space_remove(
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
 ) -> bool:
   try:
-    pass
+    if os.path.exists(space_draft.icon.url):
+      background_tasks.add_task(os.remove, space_draft.model_3d.url)
+      logger.debug({"info": f"file '{space_draft.icon.url}' removed"})
+    else:
+      logger.warning({"info": f"file '{space_draft.icon.url}' not found"})
+
+    return True
   except Exception as e:
     logger.error(e)
     raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Sometime with error")

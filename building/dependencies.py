@@ -146,7 +146,6 @@ async def dp_handle_building_update(
     logger.error(e)
     raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
 
-
 async def dp_handle_building_remove(
   background_tasks: BackgroundTasks,
   building_draft: Annotated[BuildingModel, Depends(dp_valid_building)]

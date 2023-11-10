@@ -6,6 +6,7 @@ from space.dependencies import dp_space_col, dp_valid_space, dp_handle_space_cre
 from typing_extensions import Annotated
 from starlette.background import BackgroundTasks
 from space.schemas import SpaceCreateFormSchema, SpaceCreateSchema, SpaceUpdateFormSchema, SpaceUpdateSchema
+from exceptions import InternalServerException
 from space.models import SpaceModel
 from pydantic.json import pydantic_encoder
 from core.log import logger
@@ -65,7 +66,15 @@ async def put(
   space_update_data: Annotated[SpaceUpdateSchema, Depends(dp_handle_space_update)],
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ):
-  pass
+  res_space = await SpaceService(space_col).update_space(space_draft, space_update_data)
+  res_space_json = json.dumps(res_space, default=pydantic_encoder)
+  logger.debug(res_space_json)
+
+  return Response(
+    content=res_space_json,
+    status_code=status.HTTP_200_OK,
+    background=background_tasks
+  )
 
 @space_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
@@ -75,4 +84,12 @@ async def delete(
   deleted: Annotated[bool, Depends(dp_handle_space_remove)],
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ):
-  pass
+  sucess = await SpaceService(space_col).delete_space(space_draft.id)
+  
+  if not sucess:
+    raise InternalServerException()
+
+  return Response(
+    status_code=status.HTTP_204_NO_CONTENT,
+    background=background_tasks
+  )
