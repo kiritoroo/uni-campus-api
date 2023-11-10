@@ -18,12 +18,12 @@ building_router = APIRouter(prefix='/building', tags=['Building'])
 async def gets(
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)]
 ):
-  buildings = await BuildingService(building_col).list_buildings()
-  buildings_json = json.dumps(buildings, default=pydantic_encoder)
-  logger.debug(buildings_json)
+  res_buildings = await BuildingService(building_col).list_buildings()
+  res_buildings_json = json.dumps(res_buildings, default=pydantic_encoder)
+  logger.debug(res_buildings_json)
 
   return Response(
-    content=buildings_json,
+    content=res_buildings_json,
     status_code=status.HTTP_200_OK
   )
   

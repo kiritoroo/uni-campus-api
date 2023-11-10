@@ -17,14 +17,27 @@ space_router = APIRouter(prefix='/space', tags=['Space'])
 async def gets(
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ):
-  pass
+  res_spaces = await SpaceService(space_col).list_space()
+  res_spaces_json = json.dumps(res_spaces, default=pydantic_encoder)
+  logger.debug(res_spaces_json)
+
+  return Response(
+    content=res_spaces_json,
+    status_code=status.HTTP_200_OK
+  )
 
 @space_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
   id: str,
   space: Annotated[SpaceModel, Depends(dp_valid_space)]
 ):
-  pass
+  space_json = json.dumps(space, default=pydantic_encoder)
+  logger.debug(space_json)
+
+  return Response(
+    content=space_json,
+    status_code=status.HTTP_200_OK
+  )
 
 @space_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(

@@ -9,6 +9,7 @@ from models import FileInfoModel
 from exceptions import HTTPException
 from motor.motor_asyncio import AsyncIOMotorCollection
 from space.models import SpaceModel
+from space.service import SpaceService
 from utils import write_file
 import json
 import os
@@ -23,7 +24,8 @@ async def dp_valid_space(
   id: str,
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ) -> SpaceModel:
-  pass
+  space = await SpaceService(space_col).get_space_by_id(id)
+  return space
   
 async def dp_handle_space_create(
   background_tasks: BackgroundTasks,
