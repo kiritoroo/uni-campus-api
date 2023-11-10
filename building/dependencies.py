@@ -1,5 +1,4 @@
 from core.db import campus_db
-from pymongo.collection import Collection
 from motor.motor_asyncio import AsyncIOMotorCollection
 from building.models import BuildingModel
 from fastapi import Depends, HTTPException, status
@@ -8,15 +7,13 @@ from motor.motor_asyncio import AsyncIOMotorCollection
 from core.log import logger
 from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, BuildingUpdateFormSchema, BuildingUpdateSchema
 from typing_extensions import Annotated
-import json
-import aiofiles
-import os
-from datetime import datetime
-import uuid
 from core.log import logger
 from models import FileInfoModel
 from starlette.background import BackgroundTasks
 from utils import write_file
+import json
+import os
+import uuid
 
 building_col = campus_db.get_collection("building")
 
