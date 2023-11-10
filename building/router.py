@@ -3,7 +3,6 @@ from building.service import BuildingService
 import building.constants as cst 
 from building.dependencies import dp_building_col, dp_valid_building, dp_handle_building_create, dp_handle_building_update, dp_handle_building_remove
 from motor.motor_asyncio import AsyncIOMotorCollection
-import json
 from pydantic.json import pydantic_encoder
 from core.log import logger
 from building.models import BuildingModel
@@ -11,12 +10,13 @@ from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, Bui
 from exceptions import InternalServerException
 from typing_extensions import Annotated
 from starlette.background import BackgroundTasks
+import json
 
 building_router = APIRouter(prefix='/building', tags=['Building'])
 
 @building_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
 async def gets(
-  building_col: AsyncIOMotorCollection = Depends(dp_building_col)
+  building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)]
 ):
   buildings = await BuildingService(building_col).list_buildings()
   buildings_json = json.dumps(buildings, default=pydantic_encoder)
@@ -30,7 +30,7 @@ async def gets(
 @building_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
   id: str,
-  building: BuildingModel | None = Depends(dp_valid_building),
+  building: Annotated[BuildingModel, Depends(dp_valid_building)],
 ):
   building_json = json.dumps(building, default=pydantic_encoder)
   logger.debug(building_json)
@@ -61,7 +61,7 @@ async def post(
 async def put(
   id: str,
   background_tasks: BackgroundTasks,
-  building_draft: Annotated[BuildingModel | None, Depends(dp_valid_building)],
+  building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
   form: Annotated[BuildingUpdateFormSchema, Depends()],
   building_update_data: Annotated[BuildingUpdateSchema, Depends(dp_handle_building_update)],
   building_col: AsyncIOMotorCollection = Depends(dp_building_col)
@@ -80,11 +80,11 @@ async def put(
 async def delete(
   id: Annotated[str, Path],
   background_tasks: BackgroundTasks,
-  building: Annotated[BuildingModel | None, Depends(dp_valid_building)],
+  building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
   deleted: Annotated[bool, Depends(dp_handle_building_remove)],
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)]
 ):
-  success = await BuildingService(building_col).delete_building(id)
+  success = await BuildingService(building_col).delete_building(building_draft.id)
 
   if not success:
     raise InternalServerException()

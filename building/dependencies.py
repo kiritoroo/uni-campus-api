@@ -20,7 +20,10 @@ building_col = campus_db.get_collection("building")
 async def dp_building_col() -> AsyncIOMotorCollection:
   yield building_col
   
-async def dp_valid_building(id: str, building_col: AsyncIOMotorCollection = Depends(dp_building_col)) -> BuildingModel:
+async def dp_valid_building(
+  id: str,
+  building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)]
+) -> BuildingModel:
   building = await BuildingService(building_col).get_building_by_id(id)
   return building
   
@@ -77,7 +80,7 @@ async def dp_handle_building_create(
 
 async def dp_handle_building_update(
   background_tasks: BackgroundTasks,
-  building_draft: Annotated[BuildingModel | None, Depends(dp_valid_building)],
+  building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
   form: Annotated[BuildingUpdateFormSchema, Depends()]
 ) -> BuildingUpdateSchema:
   model_file_id = None
@@ -146,20 +149,20 @@ async def dp_handle_building_update(
 
 async def dp_handle_building_remove(
   background_tasks: BackgroundTasks,
-  building: Annotated[BuildingModel | None, Depends(dp_valid_building)]
+  building_draft: Annotated[BuildingModel, Depends(dp_valid_building)]
 ) -> bool:
   try:
-    if os.path.exists(building.model_3d.url):
-      background_tasks.add_task(os.remove, building.model_3d.url)
-      logger.debug({"info": f"file '{building.model_3d.url}' removed"})
+    if os.path.exists(building_draft.model_3d.url):
+      background_tasks.add_task(os.remove, building_draft.model_3d.url)
+      logger.debug({"info": f"file '{building_draft.model_3d.url}' removed"})
     else:
-      logger.warning({"info": f"file '{building.model_3d.url}' not found"})
+      logger.warning({"info": f"file '{building_draft.model_3d.url}' not found"})
 
-    if os.path.exists(building.preview_img.url):
-      background_tasks.add_task(os.remove, building.preview_img.url)
-      logger.debug({"info": f"file '{building.preview_img.url}' removed"})
+    if os.path.exists(building_draft.preview_img.url):
+      background_tasks.add_task(os.remove, building_draft.preview_img.url)
+      logger.debug({"info": f"file '{building_draft.preview_img.url}' removed"})
     else:
-      logger.warning({"info": f"file '{building.preview_img.url}' not found"})
+      logger.warning({"info": f"file '{building_draft.preview_img.url}' not found"})
 
     return True
   except Exception as e:

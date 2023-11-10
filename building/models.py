@@ -18,6 +18,7 @@ class BuildingModel(BaseModel):
 
   model_config = ConfigDict(
     populate_by_name=True,
+    protected_namespaces=('building_model_'),
     arbitrary_types_allowed=True,
     json_schema_extra={
       "example": {

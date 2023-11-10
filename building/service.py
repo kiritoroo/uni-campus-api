@@ -16,7 +16,7 @@ class BuildingService:
     buildings = [BuildingModel(**doc) for doc in buildings_raw]
     return buildings
   
-  async def get_building_by_id(self, id: str) -> BuildingModel | None:
+  async def get_building_by_id(self, id: str) -> BuildingModel:
     if not ObjectId.is_valid(id):
       raise BuildingNotFound()
 

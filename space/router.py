@@ -1,8 +1,15 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response, status
+from space.service import SpaceService
 from motor.motor_asyncio import AsyncIOMotorCollection
 import space.constants as cst
-from space.dependencies import dp_space_col
+from space.dependencies import dp_space_col, dp_valid_space, dp_handle_space_create, dp_handle_space_update, dp_handle_space_remove
 from typing_extensions import Annotated
+from starlette.background import BackgroundTasks
+from space.schemas import SpaceCreateFormSchema, SpaceCreateSchema, SpaceUpdateFormSchema, SpaceUpdateSchema
+from space.models import SpaceModel
+from pydantic.json import pydantic_encoder
+from core.log import logger
+import json
 
 space_router = APIRouter(prefix='/space', tags=['Space'])
 
@@ -15,19 +22,34 @@ async def gets(
 @space_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
   id: str,
-  space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
+  space: Annotated[SpaceModel, Depends(dp_valid_space)]
 ):
   pass
 
 @space_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
+  background_tasks: BackgroundTasks,
+  form: Annotated[SpaceCreateFormSchema, Depends()],
+  space_create_data: Annotated[SpaceCreateSchema, Depends(dp_handle_space_create)],
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ):
-  pass
+  res_space = await SpaceService(space_col).create_space(space_create_data)
+  res_space_json = json.dumps(res_space, default=pydantic_encoder)
+  logger.debug(res_space_json)
+  
+  return Response(
+    content=res_space_json,
+    status_code=status.HTTP_201_CREATED,
+    background=background_tasks
+  )
 
 @space_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
   id: str,
+  background_tasks: BackgroundTasks,
+  space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
+  form: Annotated[SpaceUpdateFormSchema, Depends()],
+  space_update_data: Annotated[SpaceUpdateSchema, Depends(dp_handle_space_update)],
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ):
   pass
@@ -35,6 +57,9 @@ async def put(
 @space_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
   id: str,
+  background_tasks: BackgroundTasks,
+  space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
+  deleted: Annotated[bool, Depends(dp_handle_space_remove)],
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ):
   pass

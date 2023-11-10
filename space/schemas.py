@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from pydantic.color import Color
 from models import FileInfoModel
 from typing import Optional
@@ -6,12 +6,12 @@ from fastapi import Form, File, UploadFile
 
 class SpaceCreateSchema(BaseModel):
   name: str
-  color: Color
+  color: str
   icon: FileInfoModel
   
 class SpaceUpdateSchema(BaseModel):
   name: str
-  color: Color
+  color: str
   icon: Optional[FileInfoModel]
 
 class SpaceCreateFormSchema(BaseModel):
@@ -22,7 +22,7 @@ class SpaceCreateFormSchema(BaseModel):
   def __init__(
     self,
     name: str = Form(...),
-    color: str = Form(...),
+    color: Color = Form(...),
     icon_file: UploadFile = File(),
   ):
     return super().__init__(
@@ -39,7 +39,7 @@ class SpaceUpdateFormSchema(BaseModel):
   def __init__(
     self,
     name: str = Form(...),
-    color: str = Form(...),
+    color: Color = Form(...),
     icon_file: Optional[UploadFile] = None,
   ):
     return super().__init__(

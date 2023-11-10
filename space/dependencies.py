@@ -1,8 +1,73 @@
 from core.db import campus_db
 from motor.motor_asyncio import AsyncIOMotorCollection
+from starlette.background import BackgroundTasks
+from space.schemas import SpaceCreateFormSchema, SpaceCreateSchema, SpaceUpdateFormSchema, SpaceUpdateSchema
+from typing_extensions import Annotated
+from fastapi import Depends, status
+from core.log import logger
+from models import FileInfoModel
+from exceptions import HTTPException
+from motor.motor_asyncio import AsyncIOMotorCollection
+from space.models import SpaceModel
+from utils import write_file
+import json
+import os
+import uuid
 
 space_col = campus_db.get_collection("space")
 
 async def dp_space_col() -> AsyncIOMotorCollection:
   yield space_col
   
+async def dp_valid_space(
+  id: str,
+  space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
+) -> SpaceModel:
+  pass
+  
+async def dp_handle_space_create(
+  background_tasks: BackgroundTasks,
+  form: Annotated[SpaceCreateFormSchema, Depends()]
+) -> SpaceCreateSchema:
+  try:
+    icon_file_id = str(uuid.uuid4())
+    icon_file_extension = os.path.splitext(form.icon_file.filename)[-1]
+    icon_file_location = f"static/images/{icon_file_id}{icon_file_extension}"
+
+    background_tasks.add_task(write_file, form.icon_file, icon_file_location)
+    logger.debug({"info": f"file '{form.icon_file.filename}' saved at '{icon_file_location}'"})
+
+    schema = SpaceCreateSchema(
+      name=form.name,
+      color=form.color.as_hex(),
+      icon=FileInfoModel(
+        id=icon_file_id,
+        url=icon_file_location,
+        filename=f"{icon_file_id}{icon_file_location}",
+        extension=icon_file_location,
+        length=form.icon_file.size,
+        content_type=form.icon_file.content_type
+      )
+    )
+
+    return schema
+  except Exception as e:
+    logger.error(e)
+    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+
+async def dp_handle_space_update(
+  background_tasks: BackgroundTasks,
+  space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
+  form: Annotated[SpaceUpdateFormSchema, Depends()]
+) -> SpaceUpdateSchema:
+  pass
+
+async def dp_handle_space_remove(
+  background_tasks: BackgroundTasks,
+  space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
+) -> bool:
+  try:
+    pass
+  except Exception as e:
+    logger.error(e)
+    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Sometime with error")
