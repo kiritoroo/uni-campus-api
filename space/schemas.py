@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from pydantic.color import Color
 from models import FileInfoModel
 from typing import Optional
@@ -47,5 +47,3 @@ class SpaceUpdateFormSchema(BaseModel):
       color=color,
       icon_file=icon_file
     )
-
-
