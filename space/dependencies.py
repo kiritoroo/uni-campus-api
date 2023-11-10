@@ -45,8 +45,8 @@ async def dp_handle_space_create(
       icon=FileInfoModel(
         id=icon_file_id,
         url=icon_file_location,
-        filename=f"{icon_file_id}{icon_file_location}",
-        extension=icon_file_location,
+        filename=f"{icon_file_id}{icon_file_extension}",
+        extension=icon_file_extension,
         length=form.icon_file.size,
         content_type=form.icon_file.content_type
       )
@@ -101,7 +101,7 @@ async def dp_handle_space_remove(
 ) -> bool:
   try:
     if os.path.exists(space_draft.icon.url):
-      background_tasks.add_task(os.remove, space_draft.model_3d.url)
+      background_tasks.add_task(os.remove, space_draft.icon.url)
       logger.debug({"info": f"file '{space_draft.icon.url}' removed"})
     else:
       logger.warning({"info": f"file '{space_draft.icon.url}' not found"})
