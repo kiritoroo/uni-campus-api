@@ -10,7 +10,12 @@ class UserExists(HTTPException):
   def __init__(self):
     self.status_code = status.HTTP_400_BAD_REQUEST
     self.detail="Username already registered"
-    
+
+class IncorrectCredential(HTTPException):
+  def __init__(self):
+    self.status_code = status.HTTP_401_UNAUTHORIZED
+    self.detail="Incorrect username or password"
+
 def token_exception(token_type: str, error_detail: str, headers: dict = None):
   def decorator(func):
     async def wrapper(*args, **kwargs):

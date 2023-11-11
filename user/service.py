@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorCollection
 from user.models import UserModel
-from user.schemas import UserCreateSchema
+from user.schemas import UserSignupSchema
 from bson import ObjectId
 from user.exceptions import token_exception, UserNotFound
 
@@ -14,7 +14,7 @@ class PasswordService():
     self.crypt_context = _crypt_context
     
   async def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-    return self.crypt_context.verify_and_update(secret=plain_password, hash=hashed_password)
+    return self.crypt_context.verify_and_update(secret=plain_password, hash=hashed_password)[0]
 
   async def hashed_password(self, plain_password: str) -> str:
     return self.crypt_context.hash(secret=plain_password)
@@ -91,7 +91,7 @@ class UserService:
     user = UserModel(**user_raw)
     return user
   
-  async def create_user(self, data: UserCreateSchema) -> UserModel:
+  async def create_user(self, data: UserSignupSchema) -> UserModel:
     create_data = dict(
       **data.model_dump(exclude_none=True),
       created_at=datetime.utcnow(),

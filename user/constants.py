@@ -14,6 +14,13 @@ class TokenType(str, Enum):
 SIGNUP_ENDPOINT_DEFINITION = {
   'status_code': status.HTTP_201_CREATED,
   'description': "User Signup",
-  'response_description': "Returns authentication tokens.",
+  'response_description': "Return authentication tokens",
+  'response_model': TokenResponseModel,
+}
+
+LOGIN_ENDPOINT_DEFINITION = {
+  'status_code': status.HTTP_200_OK,
+  'description': "User Login",
+  'response_description': "Return authentication tokens",
   'response_model': TokenResponseModel,
 }

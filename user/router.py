@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, Response, status, HTTPException
 from motor.motor_asyncio import AsyncIOMotorCollection
 from typing_extensions import Annotated
-from user.schemas import UserCreateFormSchema, UserCreateSchema
-from user.dependencies import dp_user_col, dp_handle_signup, dp_token_service
+from user.schemas import UserSignupFormSchema, UserSignupSchema, UserLoginFormSchema
+from user.dependencies import dp_user_col, dp_handle_signup, dp_token_service, dp_handle_login
 from user.service import UserService, TokenService
 from user.exceptions import UserExists
+from user.models import UserModel
 from core.log import logger
 import user.constants as cst
 import os
@@ -14,8 +15,8 @@ user_router = APIRouter(prefix='/user', tags=['User'])
 
 @user_router.post('/signup', **cst.SIGNUP_ENDPOINT_DEFINITION)
 async def signup(
-  form: Annotated[UserCreateFormSchema, Depends()],
-  user_signup_data: Annotated[UserCreateSchema, Depends(dp_handle_signup)],
+  form: Annotated[UserSignupFormSchema, Depends()],
+  user_signup_data: Annotated[UserSignupSchema, Depends(dp_handle_signup)],
   dp_token_service: Annotated[TokenService, Depends(dp_token_service)],
   user_col: Annotated[AsyncIOMotorCollection, Depends(dp_user_col)]
 ):
@@ -43,8 +44,28 @@ async def signup(
     status_code=status.HTTP_201_CREATED,
   )
   
-@user_router.post('/login')
+@user_router.post('/login', **cst.LOGIN_ENDPOINT_DEFINITION)
 async def login(
-  
+  form: Annotated[UserLoginFormSchema, Depends()],
+  user_login_data: Annotated[UserModel, Depends(dp_handle_login)],
+  dp_token_service: Annotated[TokenService, Depends(dp_token_service)],
+  user_col: Annotated[AsyncIOMotorCollection, Depends(dp_user_col)]
 ):
-  pass
+  token = await dp_token_service.encode_token(
+    user_id=str(user_login_data.id),
+    username=user_login_data.username,
+    nickname=user_login_data.nickname,
+    role=user_login_data.role,
+    secret_key=os.environ.get('SECRET_KEY'),
+    algorithm=os.environ.get('ALGORITHM'),
+    exp_time=int(os.environ.get('EXP_TIME')),
+    token_type=cst.TokenType.ACCESS_TOKEN
+  )
+  
+  res_json = json.dumps(dict({'access_token': token}))
+  logger.debug(res_json)
+  
+  return Response(
+    content=res_json,
+    status_code=status.HTTP_201_CREATED,
+  )
