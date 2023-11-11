@@ -2,7 +2,6 @@ from pydantic import BaseModel, Field, ConfigDict
 from models import PyObjectId
 from typing import Optional
 from datetime import datetime
-from user.constants import UserRole
 
 class UserModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
@@ -26,6 +25,20 @@ class UserModel(BaseModel):
         "hashed_pwd": "some_hashed_password",
         "created_at": "2023-01-01T00:00:00",
         "updated_at": "2023-01-01T00:00:00"
+      }
+    }
+  )
+
+class TokenResponseModel(BaseModel):
+  token: Optional[str] = None
+
+  model_config = ConfigDict(
+    populate_by_name=True,
+    protected_namespaces=('token_model_'),
+    arbitrary_types_allowed=True,
+    json_schema_extra={
+      "example": {
+        "token": "some_token",
       }
     }
   )

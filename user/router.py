@@ -5,14 +5,14 @@ from user.schemas import UserCreateFormSchema, UserCreateSchema
 from user.dependencies import dp_user_col, dp_handle_signup, dp_token_service
 from user.service import UserService, TokenService
 from user.exceptions import UserExists
-from user.constants import TokenType
 from core.log import logger
+import user.constants as cst
 import os
 import json
 
 user_router = APIRouter(prefix='/user', tags=['User'])
 
-@user_router.post('/signup')
+@user_router.post('/signup', **cst.SIGNUP_ENDPOINT_DEFINITION)
 async def signup(
   form: Annotated[UserCreateFormSchema, Depends()],
   user_signup_data: Annotated[UserCreateSchema, Depends(dp_handle_signup)],
@@ -32,7 +32,7 @@ async def signup(
     secret_key=os.environ.get('SECRET_KEY'),
     algorithm=os.environ.get('ALGORITHM'),
     exp_time=int(os.environ.get('EXP_TIME')),
-    token_type=TokenType.ACCESS_TOKEN
+    token_type=cst.TokenType.ACCESS_TOKEN
   )
   
   res_json = json.dumps(dict({'access_token': token}))
@@ -42,3 +42,9 @@ async def signup(
     content=res_json,
     status_code=status.HTTP_201_CREATED,
   )
+  
+@user_router.post('/login')
+async def login(
+  
+):
+  pass
