@@ -47,10 +47,10 @@ class TokenService():
       return claims
 
   async def encode_token(self, user_id: str, username: str, nickname: str, role: str, secret_key: str, algorithm: str, exp_time: int, token_type: TokenType) -> str:
-    expire_time = datetime.utcnow() + timedelta(minutes=exp_time)
+    expire_time = datetime.utcnow() + timedelta(days=exp_time)
     issued_at = datetime.utcnow()
     data = {
-      'id': user_id,
+      'user_id': user_id,
       'username': username,
       'nickname': nickname,
       'role': role,

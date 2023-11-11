@@ -2,15 +2,10 @@ import uvicorn
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-import os
-import asyncio
-from fastapi.responses import PlainTextResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.background import BackgroundTask
-import psutil
-import signal
-import sys
 from fastapi.staticfiles import StaticFiles
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+import os
+import sys
 
 from user.router import user_router
 from building.router import building_router
@@ -48,10 +43,13 @@ async def startup_event():
 
 app.add_middleware(
   CORSMiddleware,
+  # allow_origins=[
+  #   "http://localhost:9999",
+  # ],
   allow_origins=["*"],
   allow_credentials=True,
-  allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allow_headers=["*"]
+  allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allow_headers=["Access-Control-Allow-Headers", 'Content-Type', 'Authorization', 'Access-Control-Allow-Origin', "Set-Cookie"],
 )
 
 api_router = APIRouter(prefix='/api')

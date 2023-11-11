@@ -47,7 +47,5 @@ async def dp_handle_login(
     or not await pass_service.verify_password(plain_password=form.plain_pwd, hashed_password=user.hashed_pwd):
     raise IncorrectCredential()
   
-  print(user.hashed_pwd)
-  print(await pass_service.verify_password(plain_password=form.plain_pwd, hashed_password=user.hashed_pwd))
   return user
   

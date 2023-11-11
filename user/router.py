@@ -8,6 +8,7 @@ from user.exceptions import UserExists
 from user.models import UserModel
 from core.log import logger
 import user.constants as cst
+from datetime import datetime, timedelta, timezone
 import os
 import json
 
@@ -64,6 +65,16 @@ async def login(
   
   res_json = json.dumps(dict({'access_token': token}))
   logger.debug(res_json)
+
+  # response.set_cookie(
+    # key="unicampus-x",
+    # value=token,
+    # secure=False,
+    # httponly=False,
+    # samesite='none',
+    # expires=(datetime.utcnow() + timedelta(days=int(os.environ.get('EXP_TIME')))).replace(tzinfo=timezone.utc),
+    # domain=os.environ.get('DOMAIN')
+  # )
   
   return Response(
     content=res_json,
