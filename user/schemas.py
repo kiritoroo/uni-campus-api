@@ -1,26 +1,25 @@
 from pydantic import BaseModel
 from typing import Optional
-from user.models import UserRoleModel
 from fastapi import Form
+from user.constants import UserRole
 
 class UserCreateSchema(BaseModel):
   username: str
   nickname: str
   hashed_pwd: str
-  role: UserRoleModel
-  
+  role: str
+
 class UserCreateFormSchema(BaseModel):
   username: str
   nickname: str
   plain_pwd: str
-  role: UserRoleModel
+  role: UserRole
   
-  def __init__(
-    self,
+  def __init__( self,
     username: str = Form(...),
     nickname: str = Form(...),
     plain_pwd: str = Form(...),
-    role: UserRoleModel = Form(...)
+    role: UserRole = Form(...)
   ):
     return super().__init__(
       username=username,

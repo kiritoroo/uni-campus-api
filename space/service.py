@@ -16,7 +16,7 @@ class SpaceService:
     spaces = [SpaceModel(**doc) for doc in spaces_raw]
     return spaces
   
-  async def get_space_by_id(self, id: str) -> SpaceModel | None:
+  async def get_space_by_id(self, id: str) -> SpaceModel:
     if not ObjectId.is_valid(id):
       raise SpaceNotFound()
 

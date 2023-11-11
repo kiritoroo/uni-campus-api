@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 
 from building.router import building_router
 from space.router import space_router
+from user.router import user_router
 
 load_dotenv()
 
@@ -90,6 +91,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
     
 api_router.include_router(building_router)
 api_router.include_router(space_router)
+api_router.include_router(user_router)
 
 app.include_router(api_router)
 

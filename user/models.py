@@ -2,21 +2,17 @@ from pydantic import BaseModel, Field, ConfigDict
 from models import PyObjectId
 from typing import Optional
 from datetime import datetime
-from enum import Enum
-
-class UserRoleModel(str, Enum):
-  guest = "guest"
-  admin = "admin"
-  superadmin = "superadmin"
+from user.constants import UserRole
 
 class UserModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
   username: Optional[str] = None
   nickname: Optional[str] = None
-  role: Optional[UserRoleModel] = None
   hashed_pwd: Optional[str] = None
+  role: Optional[str] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
+  last_login: Optional[datetime] = None
 
   model_config = ConfigDict(
     populate_by_name=True,
