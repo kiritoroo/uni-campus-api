@@ -43,6 +43,7 @@ async def get(
   
 @building_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
+  auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   form: Annotated[BuildingCreateFormSchema, Depends()],
   building_create_data: Annotated[BuildingCreateSchema, Depends(dp_handle_building_create)],
@@ -61,6 +62,7 @@ async def post(
 @building_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
   id: str,
+  auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
   form: Annotated[BuildingUpdateFormSchema, Depends()],

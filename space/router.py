@@ -10,6 +10,7 @@ from exceptions import InternalServerException
 from space.models import SpaceModel
 from pydantic.json import pydantic_encoder
 from core.log import logger
+from dependencies import dp_auth
 import json
 
 space_router = APIRouter(prefix='/space', tags=['Space'])
@@ -42,6 +43,7 @@ async def get(
 
 @space_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
+  auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   form: Annotated[SpaceCreateFormSchema, Depends()],
   space_create_data: Annotated[SpaceCreateSchema, Depends(dp_handle_space_create)],
@@ -60,6 +62,7 @@ async def post(
 @space_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
   id: str,
+  auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
   form: Annotated[SpaceUpdateFormSchema, Depends()],
@@ -79,6 +82,7 @@ async def put(
 @space_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
   id: str,
+  auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
   deleted: Annotated[bool, Depends(dp_handle_space_remove)],
