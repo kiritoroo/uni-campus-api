@@ -1,7 +1,7 @@
 from typing import Any
-from typing import Annotated, Union
+from typing import Annotated, Union, Optional
 from bson import ObjectId
-from pydantic import BaseModel, PlainSerializer, AfterValidator, WithJsonSchema, model_validator
+from pydantic import BaseModel, PlainSerializer, AfterValidator, WithJsonSchema, model_validator, ConfigDict
 import json
 
 def validate_object_id(v: Any) -> ObjectId:
@@ -44,3 +44,17 @@ class FileInfoModel(BaseModel):
     if isinstance(value, str):
       return cls(**json.loads(value))
     return value
+
+class TokenResponseModel(BaseModel):
+  token: Optional[str] = None
+
+  model_config = ConfigDict(
+    populate_by_name=True,
+    protected_namespaces=('token_model_'),
+    arbitrary_types_allowed=True,
+    json_schema_extra={
+      "example": {
+        "token": "some_token",
+      }
+    }
+  )

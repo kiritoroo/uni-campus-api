@@ -28,17 +28,3 @@ class UserModel(BaseModel):
       }
     }
   )
-
-class TokenResponseModel(BaseModel):
-  token: Optional[str] = None
-
-  model_config = ConfigDict(
-    populate_by_name=True,
-    protected_namespaces=('token_model_'),
-    arbitrary_types_allowed=True,
-    json_schema_extra={
-      "example": {
-        "token": "some_token",
-      }
-    }
-  )

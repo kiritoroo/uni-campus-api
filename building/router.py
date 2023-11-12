@@ -10,6 +10,7 @@ from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, Bui
 from exceptions import InternalServerException
 from typing_extensions import Annotated
 from starlette.background import BackgroundTasks
+from dependencies import dp_auth
 import json
 
 building_router = APIRouter(prefix='/building', tags=['Building'])
@@ -79,6 +80,7 @@ async def put(
 @building_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
   id: Annotated[str, Path],
+  auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
   deleted: Annotated[bool, Depends(dp_handle_building_remove)],

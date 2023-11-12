@@ -1,14 +1,16 @@
-from fastapi import APIRouter, Depends, Response, status, HTTPException
+from fastapi import APIRouter, Depends, Response, status
 from motor.motor_asyncio import AsyncIOMotorCollection
 from typing_extensions import Annotated
 from user.schemas import UserSignupFormSchema, UserSignupSchema, UserLoginFormSchema
-from user.dependencies import dp_user_col, dp_handle_signup, dp_token_service, dp_handle_login
-from user.service import UserService, TokenService
+from user.dependencies import dp_user_col, dp_handle_signup, dp_handle_login
+from user.service import UserService
 from user.exceptions import UserExists
 from user.models import UserModel
 from core.log import logger
+from constants import TokenType
+from dependencies import dp_token_service
+from service import TokenService
 import user.constants as cst
-from datetime import datetime, timedelta, timezone
 import os
 import json
 
@@ -34,7 +36,7 @@ async def signup(
     secret_key=os.environ.get('SECRET_KEY'),
     algorithm=os.environ.get('ALGORITHM'),
     exp_time=int(os.environ.get('EXP_TIME')),
-    token_type=cst.TokenType.ACCESS_TOKEN
+    token_type=TokenType.ACCESS_TOKEN
   )
   
   res_json = json.dumps(dict({'access_token': token}))
@@ -60,22 +62,12 @@ async def login(
     secret_key=os.environ.get('SECRET_KEY'),
     algorithm=os.environ.get('ALGORITHM'),
     exp_time=int(os.environ.get('EXP_TIME')),
-    token_type=cst.TokenType.ACCESS_TOKEN
+    token_type=TokenType.ACCESS_TOKEN
   )
   
   res_json = json.dumps(dict({'access_token': token}))
   logger.debug(res_json)
 
-  # response.set_cookie(
-    # key="unicampus-x",
-    # value=token,
-    # secure=False,
-    # httponly=False,
-    # samesite='none',
-    # expires=(datetime.utcnow() + timedelta(days=int(os.environ.get('EXP_TIME')))).replace(tzinfo=timezone.utc),
-    # domain=os.environ.get('DOMAIN')
-  # )
-  
   return Response(
     content=res_json,
     status_code=status.HTTP_201_CREATED,
