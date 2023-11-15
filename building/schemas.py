@@ -65,8 +65,8 @@ class BuildingUpdateFormSchema(BaseModel):
   position: str
   rotation:  str
   scale:  str
-  model_file: Optional[UploadFile] = None
-  preview_file: Optional[UploadFile] = None
+  model_file: Optional[UploadFile]
+  preview_file: Optional[UploadFile]
   
   def __init__(
     self,

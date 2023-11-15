@@ -79,17 +79,18 @@ async def dp_handle_space_update(
 
     schema = SpaceUpdateSchema(
       name=form.name,
-      color=form.color.as_hex(),
-        icon=FileInfoModel(
+      color=form.color.as_hex() if form.color else None,
+      icon=FileInfoModel(
         id=icon_file_id,
         url=icon_file_location,
         filename=f"{icon_file_id}{icon_file_location}",
         extension=icon_file_location,
         length=form.icon_file.size,
         content_type=form.icon_file.content_type
-      ) if form.icon_file else None
+      ) if form.icon_file else None,
+      is_public=form.is_public
     )
-    
+    logger.info(schema)
     return schema
   except Exception as e:
     logger.error(e)
