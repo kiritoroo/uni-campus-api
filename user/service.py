@@ -4,6 +4,7 @@ from user.models import UserModel
 from user.schemas import UserSignupSchema
 from bson import ObjectId
 from user.exceptions import UserNotFound
+from user.constants import UserRole
 
 class UserService:
   def __init__(self, _user_col: AsyncIOMotorCollection):
@@ -39,6 +40,7 @@ class UserService:
   async def create_user(self, data: UserSignupSchema) -> UserModel:
     create_data = dict(
       **data.model_dump(exclude_none=True),
+      role=UserRole.GUEST,
       created_at=datetime.utcnow(),
       updated_at=datetime.utcnow(),
       last_login=None

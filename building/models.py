@@ -13,6 +13,7 @@ class BuildingModel(BaseModel):
   position: Optional[Vector3Model] = None
   rotation: Optional[Vector3Model] = None
   scale: Optional[Vector3Model] = None
+  is_public: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
 

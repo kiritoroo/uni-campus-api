@@ -11,6 +11,7 @@ from constants import TokenType
 from dependencies import dp_token_service
 from service import TokenService
 import user.constants as cst
+from dependencies import dp_auth
 import os
 import json
 
@@ -18,6 +19,7 @@ user_router = APIRouter(prefix='/user', tags=['User'])
 
 @user_router.post('/signup', **cst.SIGNUP_ENDPOINT_DEFINITION)
 async def signup(
+  auth: Annotated[bool, Depends(dp_auth)],
   form: Annotated[UserSignupFormSchema, Depends()],
   user_signup_data: Annotated[UserSignupSchema, Depends(dp_handle_signup)],
   dp_token_service: Annotated[TokenService, Depends(dp_token_service)],

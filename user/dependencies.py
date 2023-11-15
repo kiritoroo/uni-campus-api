@@ -25,7 +25,6 @@ async def dp_handle_signup(
       username=form.username,
       nickname=form.nickname,
       hashed_pwd=hashed_pwd,
-      role=form.role.value
     )
     
     return schema

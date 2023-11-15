@@ -9,6 +9,7 @@ class SpaceModel(BaseModel):
   name: Optional[str] = None
   color: Optional[str] = None
   icon: Optional[FileInfoModel] = None
+  is_public: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
 
