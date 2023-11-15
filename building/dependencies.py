@@ -120,9 +120,9 @@ async def dp_handle_building_update(
       name=form.name,
       space_id=form.space_id,
       uses=form.uses,
-      position=json.loads(form.position),
-      rotation=json.loads(form.rotation),
-      scale=json.loads(form.scale),
+      position=json.loads(form.position) if form.position else None,
+      rotation=json.loads(form.rotation) if form.rotation else None,
+      scale=json.loads(form.scale) if form.scale else None,
       model_3d=FileInfoModel(
         id=model_file_id,
         url=model_file_location,
@@ -138,7 +138,8 @@ async def dp_handle_building_update(
         extension=preview_file_extension,
         length=form.preview_file.size,
         content_type=form.preview_file.content_type
-      ) if form.preview_file else None
+      ) if form.preview_file else None,
+      is_public=form.is_public
     )
     
     return schema
