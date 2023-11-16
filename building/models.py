@@ -8,11 +8,11 @@ class BuildingModel(BaseModel):
   name: str = None
   space_id: Optional[str] = None
   uses: Optional[str] = None
-  model_3d: Optional[FileInfoModel] = None
-  preview_img: Optional[FileInfoModel] = None
   position: Optional[Vector3Model] = None
   rotation: Optional[Vector3Model] = None
   scale: Optional[Vector3Model] = None
+  model_3d: Optional[FileInfoModel] = None
+  preview_img: Optional[FileInfoModel] = None
   block_ids: Optional[list[PyObjectId]] = None
   is_public: Optional[bool] = None
   created_at: Optional[datetime] = None

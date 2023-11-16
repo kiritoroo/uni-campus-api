@@ -1,10 +1,7 @@
-from pydantic import BaseModel, Field, model_validator, create_model
+from pydantic import BaseModel
 from models import Vector3Model, FileInfoModel
 from fastapi import Form, File, UploadFile
-from core.log import logger
-from dataclasses import dataclass
 from typing import Optional
-import json
 
 class BuildingCreateSchema(BaseModel):
   name: str
@@ -78,9 +75,9 @@ class BuildingUpdateFormSchema(BaseModel):
     position: str = Form(None),
     rotation: str = Form(None),
     scale:  str = Form(None),
-    model_file: Optional[UploadFile] = None,
-    preview_file: Optional[UploadFile] = None,
-    is_public: Optional[bool] = Form(None)
+    model_file: UploadFile = None,
+    preview_file: UploadFile = None,
+    is_public: bool = Form(None)
   ):
     return super().__init__(
       name=name,

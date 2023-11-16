@@ -7,9 +7,9 @@ class BlockModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
   name: str = None
   obj_name: str = None
-  uses: Optional[str] = None
-  space_id: Optional[PyObjectId] = None
   building_id: Optional[PyObjectId] = None
+  space_id: Optional[PyObjectId] = None
+  uses: Optional[str] = None
   direction_url: Optional[str] = None
   coordinate: Optional[CoordinateModel] = None
   marker_position: Optional[Vector3Model] = None

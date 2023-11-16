@@ -42,8 +42,8 @@ class SpaceUpdateFormSchema(BaseModel):
     self,
     name: str = Form(None),
     color: Color = Form(None),
-    icon_file: Optional[UploadFile] = None,
-    is_public: Optional[bool] = Form(None)
+    icon_file: UploadFile = None,
+    is_public: bool = Form(None)
   ):
     return super().__init__(
       name=name,
