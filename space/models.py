@@ -15,7 +15,7 @@ class SpaceModel(BaseModel):
 
   model_config = ConfigDict(
     populate_by_name=True,
-    protected_namespaces=('user_model_'),
+    protected_namespaces=('space_model_'),
     arbitrary_types_allowed=True,
     json_schema_extra={
       "example": {
@@ -23,6 +23,7 @@ class SpaceModel(BaseModel):
         "name": "Your Space Name",
         "color": "#fff",
         "icon": {"id": "file_id", "url": "file_url", "filename": "file_name", "extension": "file_extension", "length": 12345, "content_type": "image/png"},
+        "is_public": True,
         "created_at": "2023-11-03T10:00:00",
         "updated_at": "2023-11-03T10:00:00"
       }

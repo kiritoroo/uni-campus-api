@@ -36,6 +36,7 @@ class BuildingService:
   async def create_building(self, data: BuildingCreateSchema) -> BuildingModel:
     create_data = dict(
       **data.model_dump(exclude_none=True),
+      block_ids=[],
       is_public=False,
       created_at=datetime.utcnow(),
       updated_at=datetime.utcnow()
