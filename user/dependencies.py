@@ -1,14 +1,16 @@
 from fastapi import Depends, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorCollection
+from typing_extensions import Annotated
+
 from core.db import campus_db
 from core.log import logger
 from service import PasswordService
+from dependencies import dp_pass_service
 from user.schemas import UserSignupFormSchema, UserSignupSchema, UserLoginFormSchema
 from user.service import UserService
 from user.models import UserModel
-from typing_extensions import Annotated
 from user.exceptions import IncorrectCredential
-from dependencies import dp_pass_service
+
 
 user_col = campus_db.get_collection("user")
 

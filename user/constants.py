@@ -1,5 +1,6 @@
 from enum import Enum
 from fastapi import status
+
 from models import TokenResponseModel
 
 class UserRole(str, Enum):

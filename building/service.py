@@ -1,10 +1,12 @@
 from motor.motor_asyncio import AsyncIOMotorCollection
 from motor.motor_asyncio import AsyncIOMotorCursor
+from bson import ObjectId
+from datetime import datetime
+
 from building.models import BuildingModel
 from building.exceptions import BuildingNotFound
 from building.schemas import BuildingCreateSchema, BuildingUpdateSchema
-from bson import ObjectId
-from datetime import datetime
+
 
 class BuildingService:
   def __init__(self, _building_col: AsyncIOMotorCollection):

@@ -1,19 +1,20 @@
-from core.db import campus_db
-from motor.motor_asyncio import AsyncIOMotorCollection
-from building.models import BuildingModel
 from fastapi import Depends, HTTPException, status
-from building.service import BuildingService
 from motor.motor_asyncio import AsyncIOMotorCollection
-from core.log import logger
-from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, BuildingUpdateFormSchema, BuildingUpdateSchema
+from motor.motor_asyncio import AsyncIOMotorCollection
 from typing_extensions import Annotated
-from core.log import logger
-from models import FileInfoModel
 from starlette.background import BackgroundTasks
-from utils import write_file
 import json
 import os
 import uuid
+
+from core.db import campus_db
+from core.log import logger
+from models import FileInfoModel
+from building.models import BuildingModel
+from building.service import BuildingService
+from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, BuildingUpdateFormSchema, BuildingUpdateSchema
+from utils import write_file
+
 
 building_col = campus_db.get_collection("building")
 

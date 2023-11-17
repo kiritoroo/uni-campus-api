@@ -10,6 +10,7 @@ import sys
 from user.router import user_router
 from building.router import building_router
 from space.router import space_router
+from block.router import block_router
 
 load_dotenv()
 
@@ -87,6 +88,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 api_router.include_router(user_router)
 api_router.include_router(building_router)
 api_router.include_router(space_router)
+api_router.include_router(block_router)
 
 app.include_router(api_router)
 

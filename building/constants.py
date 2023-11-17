@@ -1,5 +1,7 @@
 from fastapi import status
+
 from building.models import BuildingModel
+
 
 GETS_ENDPOINT_DEFINITION = {
   'status_code': status.HTTP_200_OK,

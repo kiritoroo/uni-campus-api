@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from fastapi import Form
+
 from user.constants import UserRole
 
 class UserSignupSchema(BaseModel):

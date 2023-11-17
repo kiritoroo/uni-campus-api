@@ -1,8 +1,9 @@
 from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorCollection
+from bson import ObjectId
+
 from user.models import UserModel
 from user.schemas import UserSignupSchema
-from bson import ObjectId
 from user.exceptions import UserNotFound
 from user.constants import UserRole
 

@@ -1,10 +1,12 @@
 from motor.motor_asyncio import AsyncIOMotorCollection
 from motor.motor_asyncio import AsyncIOMotorCursor
+from bson import ObjectId
+from datetime import datetime
+
 from space.models import SpaceModel
 from space.exceptions import SpaceNotFound
 from space.schemas import SpaceCreateSchema, SpaceUpdateSchema
-from bson import ObjectId
-from datetime import datetime
+
 
 class SpaceService:
   def __init__(self, _space_col: AsyncIOMotorCollection):

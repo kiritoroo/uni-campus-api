@@ -1,8 +1,10 @@
+from fastapi import Form, File, UploadFile
 from pydantic import BaseModel
 from pydantic.color import Color
-from models import FileInfoModel
 from typing import Optional
-from fastapi import Form, File, UploadFile
+
+from models import FileInfoModel
+
 
 class SpaceCreateSchema(BaseModel):
   name: str

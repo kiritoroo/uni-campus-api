@@ -1,7 +1,9 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-from models import PyObjectId, Vector3Model, FileInfoModel
 from datetime import datetime
+
+from models import PyObjectId, Vector3Model, FileInfoModel
+
 
 class BuildingModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)

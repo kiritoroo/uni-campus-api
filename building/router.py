@@ -1,17 +1,19 @@
 from fastapi import APIRouter, Response, status, Depends, Path
+from motor.motor_asyncio import AsyncIOMotorCollection
+from pydantic.json import pydantic_encoder
+from starlette.background import BackgroundTasks
+from typing_extensions import Annotated
+import json
+
+from core.log import logger
+from exceptions import InternalServerException
+from dependencies import dp_auth
 from building.service import BuildingService
 import building.constants as cst 
 from building.dependencies import dp_building_col, dp_valid_building, dp_handle_building_create, dp_handle_building_update, dp_handle_building_remove
-from motor.motor_asyncio import AsyncIOMotorCollection
-from pydantic.json import pydantic_encoder
-from core.log import logger
 from building.models import BuildingModel
 from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, BuildingUpdateFormSchema, BuildingUpdateSchema
-from exceptions import InternalServerException
-from typing_extensions import Annotated
-from starlette.background import BackgroundTasks
-from dependencies import dp_auth
-import json
+
 
 building_router = APIRouter(prefix='/building', tags=['Building'])
 

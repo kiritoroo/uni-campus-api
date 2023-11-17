@@ -1,7 +1,9 @@
 from pydantic import BaseModel
-from models import Vector3Model, FileInfoModel
 from fastapi import Form, File, UploadFile
 from typing import Optional
+
+from models import Vector3Model, FileInfoModel
+
 
 class BuildingCreateSchema(BaseModel):
   name: str

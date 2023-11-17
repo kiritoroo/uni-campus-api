@@ -1,8 +1,10 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-from models import PyObjectId, FileInfoModel
 from pydantic.color import Color
 from datetime import datetime
+
+from models import PyObjectId, FileInfoModel
+
 
 class SpaceModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)

@@ -1,19 +1,21 @@
 from fastapi import APIRouter, Depends, Response, status
 from motor.motor_asyncio import AsyncIOMotorCollection
 from typing_extensions import Annotated
+from constants import TokenType
+import os
+import json
+
+from core.log import logger
+from dependencies import dp_auth
+from dependencies import dp_token_service
+from service import TokenService
 from user.schemas import UserSignupFormSchema, UserSignupSchema, UserLoginFormSchema
 from user.dependencies import dp_user_col, dp_handle_signup, dp_handle_login
 from user.service import UserService
 from user.exceptions import UserExists
 from user.models import UserModel
-from core.log import logger
-from constants import TokenType
-from dependencies import dp_token_service
-from service import TokenService
 import user.constants as cst
-from dependencies import dp_auth
-import os
-import json
+
 
 user_router = APIRouter(prefix='/user', tags=['User'])
 

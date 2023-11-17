@@ -1,19 +1,20 @@
-from core.db import campus_db
+from fastapi import Depends, status
 from motor.motor_asyncio import AsyncIOMotorCollection
 from starlette.background import BackgroundTasks
-from space.schemas import SpaceCreateFormSchema, SpaceCreateSchema, SpaceUpdateFormSchema, SpaceUpdateSchema
 from typing_extensions import Annotated
-from fastapi import Depends, status
-from core.log import logger
-from models import FileInfoModel
-from exceptions import HTTPException
 from motor.motor_asyncio import AsyncIOMotorCollection
+import os
+import uuid
+
+from core.db import campus_db
+from core.log import logger
+from exceptions import HTTPException
+from models import FileInfoModel
+from space.schemas import SpaceCreateFormSchema, SpaceCreateSchema, SpaceUpdateFormSchema, SpaceUpdateSchema
 from space.models import SpaceModel
 from space.service import SpaceService
 from utils import write_file
-import json
-import os
-import uuid
+
 
 space_col = campus_db.get_collection("space")
 

@@ -1,7 +1,9 @@
 from pydantic import BaseModel, Field, ConfigDict
-from models import PyObjectId
 from typing import Optional
 from datetime import datetime
+
+from models import PyObjectId
+
 
 class UserModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
