@@ -42,13 +42,21 @@ class BuildingService:
         '$unwind': '$blocks.space'
       },
       { 
-       "$group": {
-          "_id": "$_id",
-          "blocks": { "$push": "$blocks" }
+        '$group': {
+          '_id': '$_id',
+          'building': {'$first': '$$ROOT'},
+          'blocks': { '$push': '$blocks' }
         }
-      }
+      },
+      {
+        '$replaceRoot': {
+          'newRoot': {
+            '$mergeObjects': ['$building', {'blocks': '$blocks'}]
+          }
+        }
+      },
     ]).to_list(length=None)
-
+  
     buildings = [BuildingPopulateSchema(**doc) for doc in buildings_raw]
     return buildings
   
@@ -98,11 +106,19 @@ class BuildingService:
         '$unwind': '$blocks.space'
       },
       { 
-       "$group": {
-          "_id": "$_id",
-          "blocks": { "$push": "$blocks" }
+        '$group': {
+          '_id': '$_id',
+          'building': {'$first': '$$ROOT'},
+          'blocks': { '$push': '$blocks' }
         }
-      }
+      },
+      {
+        '$replaceRoot': {
+          'newRoot': {
+            '$mergeObjects': ['$building', {'blocks': '$blocks'}]
+          }
+        }
+      },
     ]).to_list(length=None)
 
     if not building_raw:

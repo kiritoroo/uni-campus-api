@@ -1,7 +1,7 @@
 from typing import Any
-from typing import Annotated, Union, Optional
+from typing import Annotated, Union, Optional, Dict
 from bson import ObjectId
-from pydantic import BaseModel, PlainSerializer, AfterValidator, WithJsonSchema, model_validator, ConfigDict
+from pydantic import BaseModel, PlainSerializer, AfterValidator, WithJsonSchema, model_validator, ConfigDict, model_serializer
 import json
 
 def validate_object_id(v: Any) -> ObjectId:
@@ -40,6 +40,17 @@ class CoordinateModel(BaseModel):
     if isinstance(value, str):
       return cls(**json.loads(value))
     return value
+  
+class DBRefModel(BaseModel):
+  ref: str
+  id: str
+  
+  @model_serializer
+  def ser_model(self) -> Dict[str, Any]:
+    return {
+      '$ref': self.ref,
+      '$id': ObjectId(self.id)
+    }
   
 class FileInfoModel(BaseModel):
   id: str

@@ -4,13 +4,14 @@ from starlette.background import BackgroundTasks
 from typing_extensions import Annotated
 from typing import List
 from motor.motor_asyncio import AsyncIOMotorCollection
+from bson import ObjectId
 import os
 import uuid
 import json
 
 from core.db import campus_db
 from core.log import logger
-from models import FileInfoModel
+from models import FileInfoModel, DBRefModel, PyObjectId
 from exceptions import InvalidFormData
 from block.models import BlockModel
 from block.service import BlockService
@@ -66,10 +67,10 @@ async def dp_handle_block_create(
     schema = BlockCreateSchema(
       name=form.name,
       obj_name=form.obj_name,
-      building_id=valid_building.id,
-      space_id=valid_space.id,
+      building_id=ObjectId(valid_building.id),
+      space_id=ObjectId(valid_space.id),
       uses=form.uses,
-      direction_url=form.direction_url,
+      direction_url=form.direction_url,   
       coordinate=json.loads(form.coordinate),
       marker_position=json.loads(form.marker_position),
       gallery=gallery_info

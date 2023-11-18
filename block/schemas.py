@@ -1,18 +1,44 @@
-from pydantic import BaseModel
-from models import Vector3Model, FileInfoModel, CoordinateModel
+from pydantic import BaseModel, ConfigDict, Field
 from fastapi import Form, File, UploadFile
 from typing import Optional
+from bson import ObjectId
+from datetime import datetime
+
+from models import Vector3Model, FileInfoModel, CoordinateModel, DBRefModel, PyObjectId
+from space.models import SpaceModel
+
+class BlockPopulateSchema(BaseModel):
+  id: Optional[PyObjectId] = Field(alias="_id", default=None)
+  name: Optional[str] = None
+  obj_name: Optional[str] = None
+  space: Optional[SpaceModel] = None
+  uses: Optional[str] = None
+  direction_url: Optional[str] = None
+  coordinate: Optional[CoordinateModel] = None
+  marker_position: Optional[Vector3Model] = None
+  gallery: Optional[list[FileInfoModel]] = None
+  is_public: Optional[bool] = None
+  created_at: Optional[datetime] = None
+  updated_at: Optional[datetime] = None
+  
+  model_config = ConfigDict(
+    arbitrary_types_allowed=True,
+  )
 
 class BlockCreateSchema(BaseModel):
   name: str
   obj_name: str
-  building_id: str
-  space_id: str
+  building_id: ObjectId
+  space_id: ObjectId
   uses: str
   direction_url: str
   coordinate: CoordinateModel
   marker_position: Vector3Model
   gallery: list[FileInfoModel]
+  
+  model_config = ConfigDict(
+    arbitrary_types_allowed=True,
+  )
 
 class BlockUpdateSchema(BaseModel):
   name: Optional[str]

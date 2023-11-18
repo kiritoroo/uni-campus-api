@@ -5,7 +5,7 @@ from datetime import datetime
 
 from block.models import BlockModel
 from block.exceptions import BlockNotFound
-from block.schemas import BlockCreateSchema, BlockUpdateSchema
+from block.schemas import BlockPopulateSchema, BlockCreateSchema, BlockUpdateSchema
 
 
 class BlockService:
@@ -24,10 +24,10 @@ class BlockService:
 
     query = {
       'filter': {
-          '_id': ObjectId(id)
+        '_id': ObjectId(id)
       }
     }
-    block_raw = await self.block_col.find_one(**query)
+    block_raw = await self.block_col.find_one(**query) 
 
     if not block_raw:
       raise BlockNotFound()
@@ -35,9 +35,37 @@ class BlockService:
     block = BlockModel(**block_raw)
     return block
 
+  async def get_block_populate_by_id(self, id: str) -> BlockPopulateSchema:
+    if not ObjectId.is_valid(id):
+      raise BlockNotFound()
+
+    block_raw = await self.block_col.aggregate([
+      {
+        '$match': {'_id': ObjectId(id)}
+      },
+      {
+        '$lookup': {
+          'from': 'space',
+          'localField': 'space_id',
+          'foreignField': '_id',
+          'as': 'space'
+        }
+      },
+      {
+        '$unwind': '$space'
+      }
+    ]).to_list(length=None)
+
+    if not block_raw:
+      raise BlockNotFound()
+
+    block = BlockPopulateSchema(**block_raw[0])
+    return block
+
   async def create_block(self, data: BlockCreateSchema) -> BlockModel:
     create_data = dict(
         **data.model_dump(exclude_none=True),
+        is_public=False,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )

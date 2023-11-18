@@ -1,12 +1,15 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional
-from models import PyObjectId, Vector3Model, FileInfoModel, CoordinateModel
 from datetime import datetime
+from bson.dbref import DBRef
+
+from models import PyObjectId, Vector3Model, FileInfoModel, CoordinateModel, DBRefModel
+
 
 class BlockModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
-  name: str = None
-  obj_name: str = None
+  name: Optional[str] = None
+  obj_name: Optional[str] = None
   building_id: Optional[PyObjectId] = None
   space_id: Optional[PyObjectId] = None
   uses: Optional[str] = None
@@ -17,7 +20,6 @@ class BlockModel(BaseModel):
   is_public: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
-  
 
   model_config = ConfigDict(
     populate_by_name=True,
