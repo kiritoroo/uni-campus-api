@@ -5,6 +5,7 @@ from typing_extensions import Annotated
 from core.db import campus_db
 from core.log import logger
 from service import PasswordService
+from exceptions import InvalidFormData
 from dependencies import dp_pass_service
 from user.schemas import UserSignupFormSchema, UserSignupSchema, UserLoginFormSchema
 from user.service import UserService
@@ -32,7 +33,7 @@ async def dp_handle_signup(
     return schema
   except Exception as e:
     logger.error(e)
-    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+    raise InvalidFormData()
 
 async def dp_handle_login(
   form: Annotated[UserLoginFormSchema, Depends()],

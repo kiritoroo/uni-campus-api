@@ -1,13 +1,13 @@
 from pydantic import BaseModel
-from models import PyObjectId, Vector3Model, FileInfoModel, CoordinateModel
+from models import Vector3Model, FileInfoModel, CoordinateModel
 from fastapi import Form, File, UploadFile
 from typing import Optional
 
 class BlockCreateSchema(BaseModel):
   name: str
   obj_name: str
-  building_id: PyObjectId
-  space_id: PyObjectId
+  building_id: str
+  space_id: str
   uses: str
   direction_url: str
   coordinate: CoordinateModel
@@ -16,7 +16,7 @@ class BlockCreateSchema(BaseModel):
 
 class BlockUpdateSchema(BaseModel):
   name: Optional[str]
-  space_id: Optional[PyObjectId]
+  space_id: Optional[str]
   uses: Optional[str]
   direction_url: Optional[str]
   coordinate: Optional[CoordinateModel]

@@ -10,6 +10,7 @@ import uuid
 from core.db import campus_db
 from core.log import logger
 from models import FileInfoModel
+from exceptions import InvalidFormData, InternalServerException
 from building.models import BuildingModel
 from building.service import BuildingService
 from building.schemas import BuildingCreateFormSchema, BuildingCreateSchema, BuildingUpdateFormSchema, BuildingUpdateSchema
@@ -77,7 +78,7 @@ async def dp_handle_building_create(
     return schema
   except Exception as e:
     logger.error(e)
-    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+    raise InvalidFormData()
 
 async def dp_handle_building_update(
   background_tasks: BackgroundTasks,
@@ -146,7 +147,7 @@ async def dp_handle_building_update(
     return schema
   except Exception as e:
     logger.error(e)
-    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+    raise InvalidFormData()
 
 async def dp_handle_building_remove(
   background_tasks: BackgroundTasks,
@@ -168,4 +169,4 @@ async def dp_handle_building_remove(
     return True
   except Exception as e:
     logger.error(e)
-    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Sometime with error")
+    raise InternalServerException()

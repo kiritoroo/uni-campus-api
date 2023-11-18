@@ -4,13 +4,17 @@ from jose import JWTError, jwt
 class InternalServerException(HTTPException):
   def __init__(self):
     self.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-    self.detail = "Sometime error"
+    self.detail = "Sometime went wrong"
 
 class UnAuthorized(HTTPException):
   def __init__(self):
     self.status_code = status.HTTP_401_UNAUTHORIZED
     self.detail="Full authentication is required to access this resource"
 
+class InvalidFormData(HTTPException):
+  def __init__(self):
+    self.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    self.detail="Invalid form data"
 
 def token_exception(token_type: str, error_detail: str, headers: dict = None):
   def decorator(func):

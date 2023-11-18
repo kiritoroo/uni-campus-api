@@ -8,7 +8,7 @@ import uuid
 
 from core.db import campus_db
 from core.log import logger
-from exceptions import HTTPException
+from exceptions import InternalServerException, InvalidFormData
 from models import FileInfoModel
 from space.schemas import SpaceCreateFormSchema, SpaceCreateSchema, SpaceUpdateFormSchema, SpaceUpdateSchema
 from space.models import SpaceModel
@@ -56,7 +56,7 @@ async def dp_handle_space_create(
     return schema
   except Exception as e:
     logger.error(e)
-    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+    raise InvalidFormData()
 
 async def dp_handle_space_update(
   background_tasks: BackgroundTasks,
@@ -95,7 +95,7 @@ async def dp_handle_space_update(
     return schema
   except Exception as e:
     logger.error(e)
-    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid form data")
+    raise InvalidFormData()
 
 async def dp_handle_space_remove(
   background_tasks: BackgroundTasks,
@@ -111,4 +111,4 @@ async def dp_handle_space_remove(
     return True
   except Exception as e:
     logger.error(e)
-    raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Sometime with error")
+    raise InternalServerException()

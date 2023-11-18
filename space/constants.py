@@ -1,6 +1,7 @@
 from fastapi import status
 from space.models import SpaceModel
 
+
 GETS_ENDPOINT_DEFINITION = {
   'status_code': status.HTTP_200_OK,
   'description': "List spaces",
