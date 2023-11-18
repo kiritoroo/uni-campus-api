@@ -5,7 +5,7 @@ from datetime import datetime
 
 from building.models import BuildingModel
 from building.exceptions import BuildingNotFound
-from building.schemas import BuildingCreateSchema, BuildingUpdateSchema
+from building.schemas import BuildingPopulateSchema, BuildingCreateSchema, BuildingUpdateSchema
 
 
 class BuildingService:
@@ -35,10 +35,33 @@ class BuildingService:
     building = BuildingModel(**building_raw)
     return building
   
+  async def get_building_populate_by_id(self, id: str) -> BuildingPopulateSchema:
+    if not ObjectId.is_valid(id):
+      raise BuildingNotFound()
+
+    building_raw = await self.building_col.aggregate([
+      {
+        '$match': {'_id': ObjectId(id)}
+      },
+      {
+        '$lookup': {
+          'from': 'block',
+          'localField': '_id',
+          'foreignField': 'building_id',
+          'as': 'blocks'
+        }
+      }
+    ]).to_list(length=None)
+
+    if not building_raw:
+      raise BuildingNotFound()
+
+    block = BuildingPopulateSchema(**building_raw[0])
+    return block
+  
   async def create_building(self, data: BuildingCreateSchema) -> BuildingModel:
     create_data = dict(
       **data.model_dump(exclude_none=True),
-      block_ids=[],
       is_public=False,
       created_at=datetime.utcnow(),
       updated_at=datetime.utcnow()

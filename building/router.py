@@ -33,13 +33,20 @@ async def gets(
 @building_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
   id: str,
-  building: Annotated[BuildingModel, Depends(dp_valid_building)],
+  building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
+  populate: bool | None = None
 ):
-  building_json = json.dumps(building, default=pydantic_encoder)
-  logger.debug(building_json)
+  res_building = None
+
+  if populate:
+    res_building = await BuildingService(building_col).get_building_populate_by_id(id)
+  else:
+    res_building = await BuildingService(building_col).get_building_by_id(id)
+  res_building_json = json.dumps(res_building, default=pydantic_encoder)
+  logger.debug(res_building_json)
 
   return Response(
-    content=building_json,
+    content=res_building_json,
     status_code=status.HTTP_200_OK
   )
   

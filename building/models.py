@@ -15,7 +15,6 @@ class BuildingModel(BaseModel):
   scale: Optional[Vector3Model] = None
   model_3d: Optional[FileInfoModel] = None
   preview_img: Optional[FileInfoModel] = None
-  block_ids: Optional[list[PyObjectId]] = None
   is_public: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
@@ -35,10 +34,9 @@ class BuildingModel(BaseModel):
         "position": {"x": 0.0, "y": 0.0, "z": 0.0},
         "rotation": {"x": 0.0, "y": 0.0, "z": 0.0},
         "scale": {"x": 0.0, "y": 0.0, "z": 0.0},
-        "block_ids": ["65462fa907344798a6a7b4bf", "65462fa907344798a6a7b4ba"],
         "is_public": True,
         "created_at": "2023-11-03T10:00:00",
         "updated_at": "2023-11-03T10:00:00"
       }
     },
-)
+  )
