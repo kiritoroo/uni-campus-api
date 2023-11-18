@@ -28,6 +28,24 @@ class BuildingService:
           'foreignField': 'building_id',
           'as': 'blocks'
         }
+      },
+      { '$unwind': '$blocks' },
+      {
+        '$lookup': {
+          'from': 'space',
+          'localField': 'blocks.space_id',
+          'foreignField': '_id',
+          'as': 'blocks.space'
+        }
+      },
+      {
+        '$unwind': '$blocks.space'
+      },
+      { 
+       "$group": {
+          "_id": "$_id",
+          "blocks": { "$push": "$blocks" }
+        }
       }
     ]).to_list(length=None)
 
@@ -65,6 +83,24 @@ class BuildingService:
           'localField': '_id',
           'foreignField': 'building_id',
           'as': 'blocks'
+        }
+      },
+      { '$unwind': '$blocks' },
+      {
+        '$lookup': {
+          'from': 'space',
+          'localField': 'blocks.space_id',
+          'foreignField': '_id',
+          'as': 'blocks.space'
+        }
+      },
+      {
+        '$unwind': '$blocks.space'
+      },
+      { 
+       "$group": {
+          "_id": "$_id",
+          "blocks": { "$push": "$blocks" }
         }
       }
     ]).to_list(length=None)

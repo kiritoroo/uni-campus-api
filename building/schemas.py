@@ -5,6 +5,7 @@ from datetime import datetime
 
 from models import Vector3Model, FileInfoModel, PyObjectId
 from block.models import BlockModel
+from block.schemas import BlockPopulateSchema
 
 class BuildingPopulateSchema(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
@@ -17,7 +18,7 @@ class BuildingPopulateSchema(BaseModel):
   model_3d: Optional[FileInfoModel] = None
   preview_img: Optional[FileInfoModel] = None
   is_public: Optional[bool] = None
-  blocks: List[BlockModel]
+  blocks: List[BlockPopulateSchema]
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
   
