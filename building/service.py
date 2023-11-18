@@ -1,5 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorCollection
 from motor.motor_asyncio import AsyncIOMotorCursor
+from typing import List
 from bson import ObjectId
 from datetime import datetime
 
@@ -16,6 +17,21 @@ class BuildingService:
     cur: AsyncIOMotorCursor = self.building_col.find()
     buildings_raw = await cur.to_list(length=None)
     buildings = [BuildingModel(**doc) for doc in buildings_raw]
+    return buildings
+  
+  async def list_buildings_populate(self) -> List[BuildingPopulateSchema]:
+    buildings_raw = await self.building_col.aggregate([
+      {
+        '$lookup': {
+          'from': 'block',
+          'localField': '_id',
+          'foreignField': 'building_id',
+          'as': 'blocks'
+        }
+      }
+    ]).to_list(length=None)
+
+    buildings = [BuildingPopulateSchema(**doc) for doc in buildings_raw]
     return buildings
   
   async def get_building_by_id(self, id: str) -> BuildingModel:

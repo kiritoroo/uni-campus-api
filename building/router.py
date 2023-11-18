@@ -19,9 +19,15 @@ building_router = APIRouter(prefix='/building', tags=['Building'])
 
 @building_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
 async def gets(
-  building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)]
+  building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
+  populate: bool | None = None
 ):
-  res_buildings = await BuildingService(building_col).list_buildings()
+  res_buildings = None
+  
+  if populate:
+    res_buildings = await BuildingService(building_col).list_buildings_populate()
+  else:
+    res_buildings = await BuildingService(building_col).list_buildings()
   res_buildings_json = json.dumps(res_buildings, default=pydantic_encoder)
   logger.debug(res_buildings_json)
 
