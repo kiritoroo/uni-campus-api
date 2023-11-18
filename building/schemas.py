@@ -1,9 +1,29 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 from fastapi import Form, File, UploadFile
-from typing import Optional
+from typing import Optional, List
+from datetime import datetime
 
-from models import Vector3Model, FileInfoModel
+from models import Vector3Model, FileInfoModel, PyObjectId
+from block.models import BlockModel
 
+class BuildingPopulateSchema(BaseModel):
+  id: Optional[PyObjectId] = Field(alias="_id", default=None)
+  name: str = None
+  space_id: Optional[str] = None
+  uses: Optional[str] = None
+  position: Optional[Vector3Model] = None
+  rotation: Optional[Vector3Model] = None
+  scale: Optional[Vector3Model] = None
+  model_3d: Optional[FileInfoModel] = None
+  preview_img: Optional[FileInfoModel] = None
+  is_public: Optional[bool] = None
+  blocks: List[BlockModel]
+  created_at: Optional[datetime] = None
+  updated_at: Optional[datetime] = None
+  
+  model_config = ConfigDict(
+    arbitrary_types_allowed=True
+  )
 
 class BuildingCreateSchema(BaseModel):
   name: str
