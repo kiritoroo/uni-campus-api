@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, status, Depends, Path
+from fastapi import APIRouter, Response, status, Depends, Path, Query
 from motor.motor_asyncio import AsyncIOMotorCollection
 from pydantic.json import pydantic_encoder
 from typing_extensions import Annotated
@@ -22,7 +22,7 @@ block_router = APIRouter(prefix='/block', tags=['Block'])
 @block_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
 async def gets(
   block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)],
-  populate: bool | None = None
+  populate: Annotated[bool | None, Query()] = None
 ):
   res_blocks = None
   
@@ -40,9 +40,9 @@ async def gets(
 
 @block_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
-  id: str,
+  id: Annotated[str, Path],
   block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)],
-  populate: bool | None = None
+  populate: Annotated[bool | None, Query()] = None
 ):
   res_block = None
   if populate:
@@ -79,7 +79,7 @@ async def post(
 
 @block_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
-  id: str,
+  id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   block_draft: Annotated[BlockModel, Depends(dp_valid_block)],
@@ -100,6 +100,7 @@ async def put(
 
 @block_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
-  
+  id: Annotated[str, Path],
+
 ):
   pass

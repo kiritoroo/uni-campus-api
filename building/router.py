@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, status, Depends, Path
+from fastapi import APIRouter, Response, status, Depends, Path, Query
 from motor.motor_asyncio import AsyncIOMotorCollection
 from pydantic.json import pydantic_encoder
 from starlette.background import BackgroundTasks
@@ -20,7 +20,7 @@ building_router = APIRouter(prefix='/building', tags=['Building'])
 @building_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
 async def gets(
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
-  populate: bool | None = None
+  populate: Annotated[bool | None, Query()] = None
 ):
   res_buildings = None
   
@@ -38,9 +38,9 @@ async def gets(
   
 @building_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
-  id: str,
+  id: Annotated[str, Path],
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
-  populate: bool | None = None
+  populate: Annotated[bool | None, Query()] = None
 ):
   res_building = None
 
@@ -76,7 +76,7 @@ async def post(
 
 @building_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
-  id: str,
+  id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
