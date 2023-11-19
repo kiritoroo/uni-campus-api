@@ -21,9 +21,15 @@ block_router = APIRouter(prefix='/block', tags=['Block'])
 
 @block_router.get('/')
 async def gets(
-  block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)]
+  block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)],
+  populate: bool | None = None
 ):
-  res_blocks = await BlockService(block_col).list_blocks()
+  res_blocks = None
+  
+  if populate:
+    res_blocks = await BlockService(block_col).list_blocks_populate()
+  else:
+    res_blocks = await BlockService(block_col).list_blocks()
   res_blocks_json = json.dumps(res_blocks, default=pydantic_encoder)
   logger.debug(res_blocks_json)
 
@@ -35,13 +41,19 @@ async def gets(
 @block_router.get('/{id}')
 async def get(
   id: str,
-  block: Annotated[BlockModel, Depends(dp_valid_block)],
+  block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)],
+  populate: bool | None = None
 ):
-  block_json = json.dumps(block, default=pydantic_encoder)
-  logger.debug(block_json)
+  res_block = None
+  if populate:
+    res_block = await BlockService(block_col).get_block_populate_by_id(id)
+  else:
+    res_block = await BlockService(block_col).get_block_by_id(id)
+  res_block_json = json.dumps(res_block, default=pydantic_encoder)
+  logger.debug(res_block_json)
   
   return Response(
-    content=block_json,
+    content=res_block_json,
     status_code=status.HTTP_200_OK
   )
 

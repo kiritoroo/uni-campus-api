@@ -42,7 +42,7 @@ class BlockCreateSchema(BaseModel):
 
 class BlockUpdateSchema(BaseModel):
   name: Optional[str]
-  space_id: Optional[str]
+  space_id: ObjectId
   uses: Optional[str]
   direction_url: Optional[str]
   coordinate: Optional[CoordinateModel]

@@ -17,6 +17,24 @@ class BlockService:
     blocks_raw = await cur.to_list(length=None)
     blocks = [BlockModel(**doc) for doc in blocks_raw]
     return blocks
+  
+  async def list_blocks_populate(self) -> list[BlockPopulateSchema]:
+    blocks_raw = await self.block_col.aggregate([
+      {
+        '$lookup': {
+          'from': 'space',
+          'localField': 'space_id',
+          'foreignField': '_id',
+          'as': 'space'
+        }
+      },
+      {
+        '$unwind': '$space'
+      }
+    ]).to_list(length=None)
+
+    blocks = [BlockPopulateSchema(**doc) for doc in blocks_raw]
+    return blocks
 
   async def get_block_by_id(self, id: str) -> BlockModel:
     if not ObjectId.is_valid(id):
