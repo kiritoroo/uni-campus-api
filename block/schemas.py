@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 from fastapi import Form, File, UploadFile
-from typing import Optional
+from typing import Optional, List
 from bson import ObjectId
 from datetime import datetime
 
@@ -17,7 +17,7 @@ class BlockPopulateSchema(BaseModel):
   direction_url: Optional[str] = None
   coordinate: Optional[CoordinateModel] = None
   marker_position: Optional[Vector3Model] = None
-  gallery: Optional[list[FileInfoModel]] = None
+  gallery: Optional[List[FileInfoModel]] = None
   is_public: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
@@ -35,7 +35,7 @@ class BlockCreateSchema(BaseModel):
   direction_url: str
   coordinate: CoordinateModel
   marker_position: Vector3Model
-  gallery: list[FileInfoModel]
+  gallery: List[FileInfoModel]
   
   model_config = ConfigDict(
     arbitrary_types_allowed=True,
@@ -48,7 +48,7 @@ class BlockUpdateSchema(BaseModel):
   direction_url: Optional[str]
   coordinate: Optional[CoordinateModel]
   marker_position: Optional[Vector3Model]
-  gallery: Optional[list[FileInfoModel]]
+  gallery: Optional[List[FileInfoModel]]
   is_public: Optional[bool]
 
   model_config = ConfigDict(
@@ -64,7 +64,7 @@ class BlockCreateFormSchema(BaseModel):
   direction_url: str
   coordinate: str
   marker_position: str
-  gallery: list[UploadFile]
+  gallery: List[UploadFile]
   
   def __init__(
     self,
@@ -76,7 +76,7 @@ class BlockCreateFormSchema(BaseModel):
     direction_url: str = Form(...),
     coordinate: str = Form(...),
     marker_position: str = Form(...),
-    gallery: list[UploadFile] = list[File()]
+    gallery: List[UploadFile] = list[File()]
   ):
     return super().__init__(
       name=name,
@@ -97,7 +97,7 @@ class BlockUpdateFormSchema(BaseModel):
   direction_url: Optional[str]
   coordinate: Optional[str]
   marker_position: Optional[str]
-  gallery: Optional[list[UploadFile]]
+  gallery: Optional[List[UploadFile]]
   is_public: Optional[bool]
   
   def __init__(
@@ -108,7 +108,7 @@ class BlockUpdateFormSchema(BaseModel):
     direction_url: str = Form(None),
     coordinate: str = Form(None),
     marker_position: str = Form(None),
-    gallery: list[UploadFile] = None,
+    gallery: List[UploadFile] = None,
     is_public: bool = Form(None)
   ):
     return super().__init__(

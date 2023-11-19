@@ -10,7 +10,7 @@ from dependencies import dp_auth
 from exceptions import InternalServerException
 from block.service import BlockService
 import block.constants as cst
-from block.dependencies import dp_block_col, dp_valid_block, dp_handle_block_create
+from block.dependencies import dp_block_col, dp_valid_block, dp_handle_block_create, dp_handle_block_update
 from block.models import BlockModel
 from block.schemas import BlockCreateFormSchema, BlockCreateSchema, BlockUpdateFormSchema, BlockUpdateSchema
 from building.dependencies import dp_building_col
@@ -19,7 +19,7 @@ from space.dependencies import dp_space_col
 
 block_router = APIRouter(prefix='/block', tags=['Block'])
 
-@block_router.get('/')
+@block_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
 async def gets(
   block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)],
   populate: bool | None = None
@@ -38,7 +38,7 @@ async def gets(
     status_code=status.HTTP_200_OK
   )
 
-@block_router.get('/{id}')
+@block_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
   id: str,
   block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)],
@@ -57,7 +57,7 @@ async def get(
     status_code=status.HTTP_200_OK
   )
 
-@block_router.post('/')
+@block_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
   auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
@@ -77,13 +77,28 @@ async def post(
     background=background_tasks
   )
 
-@block_router.put('/{id}')
+@block_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
-  
+  id: str,
+  auth: Annotated[bool, Depends(dp_auth)],
+  background_tasks: BackgroundTasks,
+  block_draft: Annotated[BlockModel, Depends(dp_valid_block)],
+  form: Annotated[BlockUpdateFormSchema, Depends()],
+  space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)],
+  block_update_data: Annotated[BlockUpdateSchema, Depends(dp_handle_block_update)],
+  block_col: AsyncIOMotorCollection = Depends(dp_block_col)
 ):
-  pass
+  res_block = await BlockService(block_col).update_block(block_draft, block_update_data)
+  res_block_json = json.dumps(res_block, default=pydantic_encoder)
+  logger.debug(res_block_json)
+  
+  return Response(
+    content=res_block_json,
+    status_code=status.HTTP_200_OK,
+    background=background_tasks
+  )
 
-@block_router.delete('/{id}')
+@block_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
   
 ):

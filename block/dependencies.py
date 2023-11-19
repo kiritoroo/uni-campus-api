@@ -37,7 +37,7 @@ async def dp_valid_block(
 
 async def dp_handle_block_create(
   background_tasks: BackgroundTasks,
-  form: Annotated[BlockCreateFormSchema, Depends()],
+  form: Annotated[BlockUpdateFormSchema, Depends()],
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ) -> BlockCreateSchema:
@@ -74,6 +74,57 @@ async def dp_handle_block_create(
       coordinate=json.loads(form.coordinate),
       marker_position=json.loads(form.marker_position),
       gallery=gallery_info
+    )
+    
+    return schema
+  except Exception as e:
+    logger.error(e)
+    raise InvalidFormData()
+
+async def dp_handle_block_update(
+  background_tasks: BackgroundTasks,
+  block_draft: Annotated[BlockModel, Depends(dp_valid_block)],
+  form: Annotated[BlockUpdateFormSchema, Depends()],
+  space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
+) -> BlockUpdateSchema:
+  if form.space_id:
+    valid_space = await SpaceService(space_col).get_space_by_id(form.space_id)
+
+  new_gallery = []
+
+  try:
+    if form.gallery and len(form.gallery) > 0:
+      if block_draft.gallery and len(block_draft.gallery) > 0:
+        for old_image in block_draft.gallery:
+          background_tasks.add_task(os.remove, old_image.url)
+
+        for image_file in form.gallery:
+          image_file_id = str(uuid.uuid4())
+          image_file_extension = os.path.splitext(image_file.filename)[-1]
+          image_file_location = f"static/images/{image_file_id}{image_file_extension}"
+
+          background_tasks.add_task(write_file, image_file, image_file_location)
+          logger.debug({"info": f"file '{image_file.filename}' resaved at '{image_file_location}'"})
+
+          image_info = FileInfoModel(
+            id=image_file_id,
+            url=image_file_location,
+            filename=f"{image_file_id}{image_file_extension}",
+            extension=image_file_extension,
+            length=image_file.size,
+            content_type=image_file.content_type
+          )
+          new_gallery.append(image_info)
+
+    schema = BlockUpdateSchema(
+      name=form.name,
+      space_id=ObjectId(form.space_id) if form.space_id else None,
+      uses=form.uses,
+      direction_url=form.direction_url,
+      coordinate=json.loads(form.coordinate) if form.coordinate else None,
+      marker_position=json.loads(form.marker_position) if form.marker_position else None,
+      gallery=new_gallery if len(new_gallery) > 0 else None,
+      is_public=form.is_public
     )
     
     return schema
