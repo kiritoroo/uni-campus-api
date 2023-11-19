@@ -11,6 +11,7 @@ class BlockPopulateSchema(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
   name: Optional[str] = None
   obj_name: Optional[str] = None
+  building_id: Optional[PyObjectId] = None
   space: Optional[SpaceModel] = None
   uses: Optional[str] = None
   direction_url: Optional[str] = None
@@ -20,7 +21,7 @@ class BlockPopulateSchema(BaseModel):
   is_public: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
-  
+
   model_config = ConfigDict(
     arbitrary_types_allowed=True,
   )
@@ -42,13 +43,17 @@ class BlockCreateSchema(BaseModel):
 
 class BlockUpdateSchema(BaseModel):
   name: Optional[str]
-  space_id: ObjectId
+  space_id: Optional[ObjectId]
   uses: Optional[str]
   direction_url: Optional[str]
   coordinate: Optional[CoordinateModel]
   marker_position: Optional[Vector3Model]
   gallery: Optional[list[FileInfoModel]]
   is_public: Optional[bool]
+
+  model_config = ConfigDict(
+    arbitrary_types_allowed=True,
+  )
 
 class BlockCreateFormSchema(BaseModel):
   name: str
