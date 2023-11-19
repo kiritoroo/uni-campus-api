@@ -12,7 +12,7 @@ import json
 from core.db import campus_db
 from core.log import logger
 from models import FileInfoModel, DBRefModel, PyObjectId
-from exceptions import InvalidFormData
+from exceptions import InvalidFormData, InternalServerException
 from block.models import BlockModel
 from block.service import BlockService
 from block.schemas import BlockCreateFormSchema, BlockCreateSchema, BlockUpdateFormSchema, BlockUpdateSchema
@@ -131,3 +131,19 @@ async def dp_handle_block_update(
   except Exception as e:
     logger.error(e)
     raise InvalidFormData()
+  
+async def dp_handle_block_remove(
+  background_tasks: BackgroundTasks,
+  block_draft: Annotated[BlockModel, Depends(dp_valid_block)],
+) -> bool:
+  try:
+    if block_draft.gallery and len(block_draft.gallery) > 0:
+      for image_info in block_draft.gallery:
+        if os.path.exists(image_info.url):
+          background_tasks.add_task(os.remove, image_info.url)
+          logger.debug({"info": f"file '{image_info.url}' removed"})
+
+    return True
+  except Exception as e:
+    logger.error(e)
+    raise InternalServerException()

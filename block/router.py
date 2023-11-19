@@ -10,7 +10,7 @@ from dependencies import dp_auth
 from exceptions import InternalServerException
 from block.service import BlockService
 import block.constants as cst
-from block.dependencies import dp_block_col, dp_valid_block, dp_handle_block_create, dp_handle_block_update
+from block.dependencies import dp_block_col, dp_valid_block, dp_handle_block_create, dp_handle_block_update, dp_handle_block_remove
 from block.models import BlockModel
 from block.schemas import BlockCreateFormSchema, BlockCreateSchema, BlockUpdateFormSchema, BlockUpdateSchema
 from building.dependencies import dp_building_col
@@ -101,6 +101,18 @@ async def put(
 @block_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
   id: Annotated[str, Path],
-
+  auth: Annotated[bool, Depends(dp_auth)],
+  background_tasks: BackgroundTasks,
+  block_draft: Annotated[BlockModel, Depends(dp_valid_block)],
+  deleted: Annotated[bool, Depends(dp_handle_block_remove)],
+  block_col: AsyncIOMotorCollection = Depends(dp_block_col)
 ):
-  pass
+  success = await BlockService(block_col).delete_block(block_draft.id)
+  
+  if not success:
+    raise InternalServerException()
+  
+  return Response(
+    status_code=status.HTTP_204_NO_CONTENT,
+    background=background_tasks
+  )

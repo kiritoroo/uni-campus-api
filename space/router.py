@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, Path
 from motor.motor_asyncio import AsyncIOMotorCollection
 from starlette.background import BackgroundTasks
 from typing_extensions import Annotated
@@ -32,7 +32,7 @@ async def gets(
 
 @space_router.get('/{id}', **cst.GET_ENDPOINT_DEFINITION)
 async def get(
-  id: str,
+  id: Annotated[str, Path],
   space: Annotated[SpaceModel, Depends(dp_valid_space)]
 ):
   space_json = json.dumps(space, default=pydantic_encoder)
@@ -63,7 +63,7 @@ async def post(
 
 @space_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
-  id: str,
+  id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
@@ -83,7 +83,7 @@ async def put(
 
 @space_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
-  id: str,
+  id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
