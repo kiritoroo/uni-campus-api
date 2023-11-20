@@ -29,8 +29,6 @@ class BuildingPopulateSchema(BaseModel):
 
 class BuildingCreateSchema(BaseModel):
   name: str
-  space_id: str
-  uses: str
   position: Vector3Model
   rotation:  Vector3Model
   scale:  Vector3Model
@@ -39,8 +37,6 @@ class BuildingCreateSchema(BaseModel):
   
 class BuildingUpdateSchema(BaseModel):
   name: Optional[str]
-  space_id: Optional[str]
-  uses: Optional[str]
   position: Optional[Vector3Model]
   rotation:  Optional[Vector3Model]
   scale:  Optional[Vector3Model]
@@ -50,8 +46,6 @@ class BuildingUpdateSchema(BaseModel):
 
 class BuildingCreateFormSchema(BaseModel):
   name: str
-  space_id: str
-  uses: str
   position: str
   rotation:  str
   scale:  str
@@ -61,8 +55,6 @@ class BuildingCreateFormSchema(BaseModel):
   def __init__(
     self,
     name: str = Form(...),
-    space_id: str = Form(...),
-    uses: str = Form(...),
     position: str = Form(...),
     rotation: str = Form(...),
     scale:  str = Form(...),
@@ -71,8 +63,6 @@ class BuildingCreateFormSchema(BaseModel):
   ):
     return super().__init__(
       name=name,
-      space_id=space_id,
-      uses=uses,
       position=position,
       rotation=rotation,
       scale=scale,
@@ -82,8 +72,6 @@ class BuildingCreateFormSchema(BaseModel):
     
 class BuildingUpdateFormSchema(BaseModel):
   name: Optional[str]
-  space_id: Optional[str]
-  uses: Optional[str]
   position: Optional[str]
   rotation:  Optional[str]
   scale:  Optional[str]
@@ -94,8 +82,6 @@ class BuildingUpdateFormSchema(BaseModel):
   def __init__(
     self,
     name: str = Form(None),
-    space_id: str = Form(None),
-    uses: str = Form(None),
     position: str = Form(None),
     rotation: str = Form(None),
     scale:  str = Form(None),
@@ -105,8 +91,6 @@ class BuildingUpdateFormSchema(BaseModel):
   ):
     return super().__init__(
       name=name,
-      space_id=space_id,
-      uses=uses,
       position=position,
       rotation=rotation,
       scale=scale,

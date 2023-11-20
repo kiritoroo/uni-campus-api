@@ -52,8 +52,6 @@ async def dp_handle_building_create(
 
     schema = BuildingCreateSchema(
       name=form.name,
-      space_id=form.space_id,
-      uses=form.uses,
       position=json.loads(form.position),
       rotation=json.loads(form.rotation),
       scale=json.loads(form.scale),
@@ -120,8 +118,6 @@ async def dp_handle_building_update(
 
     schema = BuildingUpdateSchema(
       name=form.name,
-      space_id=form.space_id,
-      uses=form.uses,
       position=json.loads(form.position) if form.position else None,
       rotation=json.loads(form.rotation) if form.rotation else None,
       scale=json.loads(form.scale) if form.scale else None,

@@ -8,8 +8,6 @@ from models import PyObjectId, Vector3Model, FileInfoModel
 class BuildingModel(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
   name: str = None
-  space_id: Optional[str] = None
-  uses: Optional[str] = None
   position: Optional[Vector3Model] = None
   rotation: Optional[Vector3Model] = None
   scale: Optional[Vector3Model] = None
@@ -27,8 +25,6 @@ class BuildingModel(BaseModel):
       "example": {
         "id": "65462fa907344798a6a7b4bf",
         "name": "Building Center",
-        "space_id": "65462fa907344798a6a7b4bf",
-        "uses": "Multi purpose",
         "model_3d": {"url": "abc.glb", "extension": ".glb", "length": 100, "content_type": "application/octet-stream"},
         "preview_img": {"url": "abc.webp", "extension": ".webp", "length": 100, "content_type": "image/webp"},
         "position": {"x": 0.0, "y": 0.0, "z": 0.0},

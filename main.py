@@ -42,12 +42,14 @@ async def startup_event():
 #     task = BackgroundTask(exit_app)
 #     return PlainTextResponse(str(exc.detail), status_code=exc.status_code, background=task)
 
+origins = ["*"]
+
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["*"],
+  allow_origins=origins,
   allow_credentials=True,
-  allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allow_headers=["Access-Control-Allow-Headers", 'Content-Type', 'Authorization', 'Access-Control-Allow-Origin', "Set-Cookie"],
+  allow_methods=["*"],
+  allow_headers=["*"],
 )
 
 api_router = APIRouter(prefix='/api')
