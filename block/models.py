@@ -17,7 +17,7 @@ class BlockModel(BaseModel):
   coordinate: Optional[CoordinateModel] = None
   marker_position: Optional[Vector3Model] = None
   gallery: Optional[list[FileInfoModel]] = None
-  is_public: Optional[bool] = None
+  is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
 
@@ -40,7 +40,7 @@ class BlockModel(BaseModel):
           {"file_name": "abc.jpg", "url": "abc.jpg", "extension": ".jpg", "length": 100, "content_type": "image/jpeg"},
           {"file_name": "123.jpg", "url": "123.jpg", "extension": ".jpg", "length": 100, "content_type": "image/jpeg"}
         ],
-        "is_public": True,
+        "is_publish": True,
         "created_at": "2023-11-03T10:00:00",
         "updated_at": "2023-11-03T10:00:00",
       }

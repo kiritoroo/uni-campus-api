@@ -13,7 +13,7 @@ class BuildingModel(BaseModel):
   scale: Optional[Vector3Model] = None
   model_3d: Optional[FileInfoModel] = None
   preview_img: Optional[FileInfoModel] = None
-  is_public: Optional[bool] = None
+  is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
 
@@ -30,7 +30,7 @@ class BuildingModel(BaseModel):
         "position": {"x": 0.0, "y": 0.0, "z": 0.0},
         "rotation": {"x": 0.0, "y": 0.0, "z": 0.0},
         "scale": {"x": 0.0, "y": 0.0, "z": 0.0},
-        "is_public": True,
+        "is_publish": True,
         "created_at": "2023-11-03T10:00:00",
         "updated_at": "2023-11-03T10:00:00"
       }

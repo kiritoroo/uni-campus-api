@@ -83,7 +83,7 @@ class BlockService:
   async def create_block(self, data: BlockCreateSchema) -> BlockModel:
     create_data = dict(
         **data.model_dump(exclude_none=True),
-        is_public=False,
+        is_publish=False,
         created_at=datetime.utcnow(),
         updated_at=datetime.utcnow()
     )

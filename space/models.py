@@ -11,7 +11,7 @@ class SpaceModel(BaseModel):
   name: Optional[str] = None
   color: Optional[str] = None
   icon: Optional[FileInfoModel] = None
-  is_public: Optional[bool] = None
+  is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
 
@@ -25,7 +25,7 @@ class SpaceModel(BaseModel):
         "name": "Your Space Name",
         "color": "#fff",
         "icon": {"id": "file_id", "url": "file_url", "filename": "file_name", "extension": "file_extension", "length": 12345, "content_type": "image/png"},
-        "is_public": True,
+        "is_publish": True,
         "created_at": "2023-11-03T10:00:00",
         "updated_at": "2023-11-03T10:00:00"
       }

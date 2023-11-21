@@ -15,7 +15,7 @@ class SpaceUpdateSchema(BaseModel):
   name: Optional[str]
   color: Optional[str]
   icon: Optional[FileInfoModel]
-  is_public: Optional[bool]
+  is_publish: Optional[bool]
 
 class SpaceCreateFormSchema(BaseModel):
   name: str
@@ -38,18 +38,18 @@ class SpaceUpdateFormSchema(BaseModel):
   name: Optional[str]
   color: Optional[Color]
   icon_file: Optional[UploadFile]
-  is_public: Optional[bool]
+  is_publish: Optional[bool]
   
   def __init__(
     self,
     name: str = Form(None),
     color: Color = Form(None),
     icon_file: UploadFile = None,
-    is_public: bool = Form(None)
+    is_publish: bool = Form(None)
   ):
     return super().__init__(
       name=name,
       color=color,
       icon_file=icon_file,
-      is_public=is_public
+      is_publish=is_publish
     )

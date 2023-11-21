@@ -137,7 +137,7 @@ async def dp_handle_building_update(
         length=form.preview_file.size,
         content_type=form.preview_file.content_type
       ) if form.preview_file else None,
-      is_public=form.is_public
+      is_publish=form.is_publish
     )
     
     return schema

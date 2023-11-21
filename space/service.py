@@ -38,7 +38,7 @@ class SpaceService:
   async def create_space(self, data: SpaceCreateSchema) -> SpaceModel:
     create_data = dict(
       **data.model_dump(exclude_none=True),
-      is_public=False,
+      is_publish=False,
       created_at=datetime.utcnow(),
       updated_at=datetime.utcnow()
     )

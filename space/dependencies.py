@@ -89,7 +89,7 @@ async def dp_handle_space_update(
         length=form.icon_file.size,
         content_type=form.icon_file.content_type
       ) if form.icon_file else None,
-      is_public=form.is_public
+      is_publish=form.is_publish
     )
     logger.info(schema)
     return schema

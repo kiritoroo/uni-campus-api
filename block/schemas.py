@@ -18,7 +18,7 @@ class BlockPopulateSchema(BaseModel):
   coordinate: Optional[CoordinateModel] = None
   marker_position: Optional[Vector3Model] = None
   gallery: Optional[List[FileInfoModel]] = None
-  is_public: Optional[bool] = None
+  is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
 
@@ -49,7 +49,7 @@ class BlockUpdateSchema(BaseModel):
   coordinate: Optional[CoordinateModel]
   marker_position: Optional[Vector3Model]
   gallery: Optional[List[FileInfoModel]]
-  is_public: Optional[bool]
+  is_publish: Optional[bool]
 
   model_config = ConfigDict(
     arbitrary_types_allowed=True,
@@ -98,7 +98,7 @@ class BlockUpdateFormSchema(BaseModel):
   coordinate: Optional[str]
   marker_position: Optional[str]
   gallery: Optional[List[UploadFile]]
-  is_public: Optional[bool]
+  is_publish: Optional[bool]
   
   def __init__(
     self,
@@ -109,7 +109,7 @@ class BlockUpdateFormSchema(BaseModel):
     coordinate: str = Form(None),
     marker_position: str = Form(None),
     gallery: List[UploadFile] = None,
-    is_public: bool = Form(None)
+    is_publish: bool = Form(None)
   ):
     return super().__init__(
       name=name,
@@ -119,5 +119,5 @@ class BlockUpdateFormSchema(BaseModel):
       coordinate=coordinate,
       marker_position=marker_position,
       gallery=gallery,
-      is_public=is_public
+      is_publish=is_publish
     )

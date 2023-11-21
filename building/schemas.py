@@ -17,7 +17,7 @@ class BuildingPopulateSchema(BaseModel):
   scale: Optional[Vector3Model] = None
   model_3d: Optional[FileInfoModel] = None
   preview_img: Optional[FileInfoModel] = None
-  is_public: Optional[bool] = None
+  is_publish: Optional[bool] = None
   blocks: List[BlockPopulateSchema]
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
@@ -42,7 +42,7 @@ class BuildingUpdateSchema(BaseModel):
   scale:  Optional[Vector3Model]
   model_3d: Optional[FileInfoModel]
   preview_img: Optional[FileInfoModel]
-  is_public: Optional[bool]
+  is_publish: Optional[bool]
 
 class BuildingCreateFormSchema(BaseModel):
   name: str
@@ -77,7 +77,7 @@ class BuildingUpdateFormSchema(BaseModel):
   scale:  Optional[str]
   model_file: Optional[UploadFile]
   preview_file: Optional[UploadFile]
-  is_public: Optional[bool]
+  is_publish: Optional[bool]
   
   def __init__(
     self,
@@ -87,7 +87,7 @@ class BuildingUpdateFormSchema(BaseModel):
     scale:  str = Form(None),
     model_file: UploadFile = None,
     preview_file: UploadFile = None,
-    is_public: bool = Form(None)
+    is_publish: bool = Form(None)
   ):
     return super().__init__(
       name=name,
@@ -96,6 +96,6 @@ class BuildingUpdateFormSchema(BaseModel):
       scale=scale,
       model_file=model_file,
       preview_file=preview_file,
-      is_public=is_public
+      is_publish=is_publish
     )
     
