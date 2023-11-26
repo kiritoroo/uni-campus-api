@@ -37,7 +37,7 @@ async def dp_valid_block(
 
 async def dp_handle_block_create(
   background_tasks: BackgroundTasks,
-  form: Annotated[BlockUpdateFormSchema, Depends()],
+  form: Annotated[BlockCreateFormSchema, Depends()],
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ) -> BlockCreateSchema:
