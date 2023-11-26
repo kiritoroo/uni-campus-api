@@ -24,37 +24,42 @@ class BuildingService:
       {
         '$lookup': {
           'from': 'block',
-          'localField': '_id',
-          'foreignField': 'building_id',
+          'let': {'building_id': '$_id'},
+          'pipeline': [
+            {
+              '$match': {
+                '$expr': {'$eq': ['$building_id', '$$building_id']}
+               }
+            },
+            {
+              '$lookup': {
+                'from': 'space',
+                'localField': 'space_id',
+                'foreignField': '_id',
+                'as': 'space'
+              }
+            },
+            {
+              '$unwind': {
+                'path': '$space',
+                'preserveNullAndEmptyArrays': True
+              }
+            }
+          ],
           'as': 'blocks'
         }
       },
-      { '$unwind': '$blocks' },
       {
-        '$lookup': {
-          'from': 'space',
-          'localField': 'blocks.space_id',
-          'foreignField': '_id',
-          'as': 'blocks.space'
-        }
-      },
-      {
-        '$unwind': '$blocks.space'
-      },
-      { 
-        '$group': {
-          '_id': '$_id',
-          'building': {'$first': '$$ROOT'},
-          'blocks': { '$push': '$blocks' }
-        }
-      },
-      {
-        '$replaceRoot': {
-          'newRoot': {
-            '$mergeObjects': ['$building', {'blocks': '$blocks'}]
+        '$addFields': {
+          'blocks': {
+            '$cond': {
+              'if': { '$eq': ['$blocks', []] },
+              'then': [],
+              'else': '$blocks'
+            }
           }
         }
-      },
+      }
     ]).to_list(length=None)
   
     buildings = [BuildingPopulateSchema(**doc) for doc in buildings_raw]
@@ -88,37 +93,42 @@ class BuildingService:
       {
         '$lookup': {
           'from': 'block',
-          'localField': '_id',
-          'foreignField': 'building_id',
+          'let': {'building_id': '$_id'},
+          'pipeline': [
+            {
+              '$match': {
+                '$expr': {'$eq': ['$building_id', '$$building_id']}
+               }
+            },
+            {
+              '$lookup': {
+                'from': 'space',
+                'localField': 'space_id',
+                'foreignField': '_id',
+                'as': 'space'
+              }
+            },
+            {
+              '$unwind': {
+                'path': '$space',
+                'preserveNullAndEmptyArrays': True
+              }
+            }
+          ],
           'as': 'blocks'
         }
       },
-      { '$unwind': '$blocks' },
       {
-        '$lookup': {
-          'from': 'space',
-          'localField': 'blocks.space_id',
-          'foreignField': '_id',
-          'as': 'blocks.space'
-        }
-      },
-      {
-        '$unwind': '$blocks.space'
-      },
-      { 
-        '$group': {
-          '_id': '$_id',
-          'building': {'$first': '$$ROOT'},
-          'blocks': { '$push': '$blocks' }
-        }
-      },
-      {
-        '$replaceRoot': {
-          'newRoot': {
-            '$mergeObjects': ['$building', {'blocks': '$blocks'}]
+        '$addFields': {
+          'blocks': {
+            '$cond': {
+              'if': { '$eq': ['$blocks', []] },
+              'then': [],
+              'else': '$blocks'
+            }
           }
         }
-      },
+      }
     ]).to_list(length=None)
 
     if not building_raw:
