@@ -22,14 +22,15 @@ block_router = APIRouter(prefix='/block', tags=['Block'])
 @block_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
 async def gets(
   block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)],
-  populate: Annotated[bool | None, Query()] = None
+  populate: Annotated[bool | None, Query()] = None,
+  building_id: Annotated[str | None, Query()] = None
 ):
   res_blocks = None
   
   if populate:
-    res_blocks = await BlockService(block_col).list_blocks_populate()
+    res_blocks = await BlockService(block_col).list_blocks_populate(building_id)
   else:
-    res_blocks = await BlockService(block_col).list_blocks()
+    res_blocks = await BlockService(block_col).list_blocks(building_id)
   res_blocks_json = json.dumps(res_blocks, default=pydantic_encoder)
   logger.debug(res_blocks_json)
 

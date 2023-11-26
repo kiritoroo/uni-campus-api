@@ -2,6 +2,7 @@ from motor.motor_asyncio import AsyncIOMotorCollection
 from motor.motor_asyncio import AsyncIOMotorCursor
 from bson import ObjectId
 from datetime import datetime
+from typing import Optional
 
 from block.models import BlockModel
 from block.exceptions import BlockNotFound
@@ -12,14 +13,21 @@ class BlockService:
   def __init__(self, _block_col: AsyncIOMotorCollection) -> None:
     self.block_col = _block_col
 
-  async def list_blocks(self) -> list[BlockModel]:
-    cur: AsyncIOMotorCursor = self.block_col.find()
+  async def list_blocks(self, building_id: Optional[str] = None) -> list[BlockModel]:
+    query = {}
+    
+    if building_id:
+      if not ObjectId.is_valid(building_id):
+        raise BlockNotFound()
+      query['building_id'] = ObjectId(building_id)
+
+    cur: AsyncIOMotorCursor = self.block_col.find(query)
     blocks_raw = await cur.to_list(length=None)
     blocks = [BlockModel(**doc) for doc in blocks_raw]
     return blocks
   
-  async def list_blocks_populate(self) -> list[BlockPopulateSchema]:
-    blocks_raw = await self.block_col.aggregate([
+  async def list_blocks_populate(self, building_id: Optional[str] = None) -> list[BlockPopulateSchema]:
+    pipeline = [
       {
         '$lookup': {
           'from': 'space',
@@ -31,7 +39,18 @@ class BlockService:
       {
         '$unwind': '$space'
       }
-    ]).to_list(length=None)
+    ]
+    
+    if building_id:
+      if not ObjectId.is_valid(building_id):
+        raise BlockNotFound()
+      pipeline.insert(0, {
+        '$match': {
+          'building_id': ObjectId(building_id)
+        }
+      })
+    
+    blocks_raw = await self.block_col.aggregate(pipeline).to_list(length=None)
 
     blocks = [BlockPopulateSchema(**doc) for doc in blocks_raw]
     return blocks
