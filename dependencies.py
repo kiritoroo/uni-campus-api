@@ -8,6 +8,7 @@ from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
 from bson import ObjectId
 from exceptions import UnAuthorized
+from models import ClaimsModel
 import os
 
 security = HTTPBearer()
@@ -22,7 +23,7 @@ async def dp_token_service() -> TokenService:
 async def dp_auth(
   credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
   dp_token_service: Annotated[TokenService, Depends(dp_token_service)]
-) -> bool:
+) -> ClaimsModel:
   try:
     token_encrypt = credentials.credentials
     aes_key = os.environ.get('AES_KEY')
@@ -45,7 +46,7 @@ async def dp_auth(
     if not claims or not ObjectId.is_valid(claims['user_id']):
       raise UnAuthorized()
 
-    return True
+    return claims
   except Exception as e:
     raise UnAuthorized()
     

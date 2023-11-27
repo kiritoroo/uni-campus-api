@@ -1,4 +1,2 @@
 - winOS: env/Scrips/activate
 - macOS: source env/bin/activate
-- winOS: env/Scrips/activate
-- macOS: source env/bin/activate

@@ -2,6 +2,8 @@ from typing import Any
 from typing import Annotated, Union, Optional, Dict
 from bson import ObjectId
 from pydantic import BaseModel, PlainSerializer, AfterValidator, WithJsonSchema, model_validator, ConfigDict, model_serializer
+from constants import TokenType
+from datetime import datetime
 import json
 
 def validate_object_id(v: Any) -> ObjectId:
@@ -17,6 +19,19 @@ PyObjectId = Annotated[
   PlainSerializer(lambda x: str(x), return_type=str),
   WithJsonSchema({"type": "string"}, mode="serialization"),
 ]
+
+class ClaimsModel(BaseModel):
+  user_id: str
+  username: str
+  nickname: str
+  role: str
+  exp: datetime
+  iat: datetime
+  token_type: TokenType
+
+  class Config:
+      allow_population_by_field_name = True
+
 
 class Vector3Model(BaseModel):
   x: float

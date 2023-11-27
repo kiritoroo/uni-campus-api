@@ -1,6 +1,7 @@
 from exceptions import token_exception
 from passlib.context import CryptContext
 from constants import TokenType
+from models import ClaimsModel
 from jose import jwt
 from datetime import datetime, timedelta
 
@@ -19,11 +20,13 @@ class TokenService():
     token_type='access_token',
     error_detail='Could not validate credentials'
   )
-  async def decode_access_token(self, access_token: str, secret_key: str, algorithm: str) -> dict:
-    claims: dict = jwt.decode(
-      token=access_token,
-      key=secret_key,
-      algorithms=algorithm
+  async def decode_access_token(self, access_token: str, secret_key: str, algorithm: str) -> ClaimsModel:
+    claims = ClaimsModel(
+      *jwt.decode(
+        token=access_token,
+        key=secret_key,
+        algorithms=algorithm
+      )
     )
     if claims.get('token_type') == TokenType.ACCESS_TOKEN.value:
       return claims
@@ -44,13 +47,13 @@ class TokenService():
   async def encode_token(self, user_id: str, username: str, nickname: str, role: str, secret_key: str, algorithm: str, exp_time: int, token_type: TokenType) -> str:
     expire_time = datetime.utcnow() + timedelta(days=exp_time)
     issued_at = datetime.utcnow()
-    data = {
-      'user_id': user_id,
-      'username': username,
-      'nickname': nickname,
-      'role': role,
-      'exp': expire_time,
-      'iat': issued_at,
-      'token_type': token_type.value
-    }
-    return jwt.encode(data, key=secret_key, algorithm=algorithm)
+    claims = ClaimsModel(
+      user_id=user_id,
+      username=username,
+      nickname=nickname,
+      role=role,
+      exp=expire_time,
+      iat=issued_at,
+      token_type=token_type.value
+    )
+    return jwt.encode(claims.model_dump(), key=secret_key, algorithm=algorithm)
