@@ -6,7 +6,8 @@ from starlette.background import BackgroundTasks
 import json
 
 from core.log import logger
-from dependencies import dp_auth
+from dependencies import dp_auth, dp_admin
+from models import ClaimsModel
 from exceptions import InternalServerException
 from block.service import BlockService
 import block.constants as cst
@@ -61,6 +62,7 @@ async def get(
 @block_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
   auth: Annotated[bool, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   form: Annotated[BlockCreateFormSchema, Depends()],
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
@@ -82,6 +84,7 @@ async def post(
 async def put(
   id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   block_draft: Annotated[BlockModel, Depends(dp_valid_block)],
   form: Annotated[BlockUpdateFormSchema, Depends()],
@@ -103,6 +106,7 @@ async def put(
 async def delete(
   id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   block_draft: Annotated[BlockModel, Depends(dp_valid_block)],
   deleted: Annotated[bool, Depends(dp_handle_block_remove)],

@@ -9,7 +9,12 @@ class InternalServerException(HTTPException):
 class UnAuthorized(HTTPException):
   def __init__(self):
     self.status_code = status.HTTP_401_UNAUTHORIZED
-    self.detail="Full authentication is required to access this resource"
+    self.detail="Authentication is required to access this resource"
+
+class PermissionDenied(HTTPException):
+  def __init__(self):
+    self.status_code = status.HTTP_403_FORBIDDEN
+    self.detail="You don't have permission to perform this action"
 
 class InvalidFormData(HTTPException):
   def __init__(self):

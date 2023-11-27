@@ -7,7 +7,8 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
 from base64 import b64encode, b64decode
 from bson import ObjectId
-from exceptions import UnAuthorized
+from exceptions import UnAuthorized, PermissionDenied
+from user.constants import UserRole
 from models import ClaimsModel
 import os
 
@@ -42,11 +43,20 @@ async def dp_auth(
       secret_key=os.environ.get('SECRET_KEY'),
       algorithm=os.environ.get('ALGORITHM')
     )
-    
-    if not claims or not ObjectId.is_valid(claims['user_id']):
+
+    if not claims or not ObjectId.is_valid(claims.user_id):
       raise UnAuthorized()
 
     return claims
   except Exception as e:
     raise UnAuthorized()
-    
+
+async def dp_admin(
+  claims: Annotated[ClaimsModel, Depends(dp_auth)]
+) -> bool:
+  try:
+    user_role = claims.role
+    if user_role.lower() != UserRole.SUPERADMIN:
+      raise PermissionDenied()
+  except Exception as e:
+    raise PermissionDenied()

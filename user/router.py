@@ -6,9 +6,9 @@ import os
 import json
 
 from core.log import logger
-from dependencies import dp_auth
-from dependencies import dp_token_service
+from dependencies import dp_token_service, dp_auth, dp_admin
 from service import TokenService
+from models import ClaimsModel
 from user.schemas import UserSignupFormSchema, UserSignupSchema, UserLoginFormSchema
 from user.dependencies import dp_user_col, dp_handle_signup, dp_handle_login
 from user.service import UserService
@@ -21,7 +21,8 @@ user_router = APIRouter(prefix='/user', tags=['User'])
 
 @user_router.post('/signup', **cst.SIGNUP_ENDPOINT_DEFINITION)
 async def signup(
-  auth: Annotated[bool, Depends(dp_auth)],
+  auth: Annotated[ClaimsModel, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   form: Annotated[UserSignupFormSchema, Depends()],
   user_signup_data: Annotated[UserSignupSchema, Depends(dp_handle_signup)],
   dp_token_service: Annotated[TokenService, Depends(dp_token_service)],

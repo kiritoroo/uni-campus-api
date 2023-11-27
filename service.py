@@ -22,13 +22,14 @@ class TokenService():
   )
   async def decode_access_token(self, access_token: str, secret_key: str, algorithm: str) -> ClaimsModel:
     claims = ClaimsModel(
-      *jwt.decode(
+      **jwt.decode(
         token=access_token,
         key=secret_key,
         algorithms=algorithm
       )
     )
-    if claims.get('token_type') == TokenType.ACCESS_TOKEN.value:
+
+    if claims.token_type == TokenType.ACCESS_TOKEN.value:
       return claims
 
   @token_exception(

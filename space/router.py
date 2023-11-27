@@ -7,7 +7,8 @@ import json
 
 from core.log import logger
 from exceptions import InternalServerException
-from dependencies import dp_auth
+from dependencies import dp_auth, dp_admin
+from models import ClaimsModel
 import space.constants as cst
 from space.dependencies import dp_space_col, dp_valid_space, dp_handle_space_create, dp_handle_space_update, dp_handle_space_remove
 from space.service import SpaceService
@@ -45,7 +46,8 @@ async def get(
 
 @space_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
-  auth: Annotated[bool, Depends(dp_auth)],
+  auth: Annotated[ClaimsModel, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   form: Annotated[SpaceCreateFormSchema, Depends()],
   space_create_data: Annotated[SpaceCreateSchema, Depends(dp_handle_space_create)],
@@ -64,7 +66,8 @@ async def post(
 @space_router.put('/{id}', **cst.PUT_ENDPOINT_DEFINITION)
 async def put(
   id: Annotated[str, Path],
-  auth: Annotated[bool, Depends(dp_auth)],
+  auth: Annotated[ClaimsModel, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
   form: Annotated[SpaceUpdateFormSchema, Depends()],
@@ -84,7 +87,8 @@ async def put(
 @space_router.delete('/{id}', **cst.DELETE_ENDPOINT_DEFINITION)
 async def delete(
   id: Annotated[str, Path],
-  auth: Annotated[bool, Depends(dp_auth)],
+  auth: Annotated[ClaimsModel, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
   deleted: Annotated[bool, Depends(dp_handle_space_remove)],

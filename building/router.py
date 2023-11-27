@@ -7,7 +7,8 @@ import json
 
 from core.log import logger
 from exceptions import InternalServerException
-from dependencies import dp_auth
+from dependencies import dp_auth, dp_admin
+from models import ClaimsModel
 from building.service import BuildingService
 import building.constants as cst 
 from building.dependencies import dp_building_col, dp_valid_building, dp_handle_building_create, dp_handle_building_update, dp_handle_building_remove
@@ -59,6 +60,7 @@ async def get(
 @building_router.post('/', **cst.POST_ENDPOINT_DEFINITION)
 async def post(
   auth: Annotated[bool, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   form: Annotated[BuildingCreateFormSchema, Depends()],
   building_create_data: Annotated[BuildingCreateSchema, Depends(dp_handle_building_create)],
@@ -78,6 +80,7 @@ async def post(
 async def put(
   id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
   form: Annotated[BuildingUpdateFormSchema, Depends()],
@@ -98,6 +101,7 @@ async def put(
 async def delete(
   id: Annotated[str, Path],
   auth: Annotated[bool, Depends(dp_auth)],
+  admin: Annotated[bool, Depends(dp_admin)],
   background_tasks: BackgroundTasks,
   building_draft: Annotated[BuildingModel, Depends(dp_valid_building)],
   deleted: Annotated[bool, Depends(dp_handle_building_remove)],
