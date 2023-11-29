@@ -44,7 +44,7 @@ async def dp_handle_building_create(
 
     preview_file_id = str(uuid.uuid4())
     preview_file_extension = os.path.splitext(form.preview_file.filename)[-1]
-    preview_file_location = f"static/images/{preview_file_id}{preview_file_extension}"
+    preview_file_location = f"static/images/building/{preview_file_id}{preview_file_extension}"
 
     background_tasks.add_task(write_file, form.preview_file, preview_file_location)
     logger.debug({"info": f"file '{form.preview_file.filename}' saved at '{preview_file_location}'"})
@@ -110,7 +110,7 @@ async def dp_handle_building_update(
 
       preview_file_id = str(uuid.uuid4())
       preview_file_extension = os.path.splitext(form.preview_file.filename)[-1]
-      preview_file_location = f"static/images/{preview_file_id}{preview_file_extension}"
+      preview_file_location = f"static/images/building/{preview_file_id}{preview_file_extension}"
 
       background_tasks.add_task(write_file, form.preview_file, preview_file_location)
       logger.debug({"info": f"file '{form.preview_file.filename}' resaved at '{preview_file_location}'"})

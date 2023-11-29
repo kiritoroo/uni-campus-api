@@ -35,7 +35,7 @@ async def dp_handle_space_create(
   try:
     icon_file_id = str(uuid.uuid4())
     icon_file_extension = os.path.splitext(form.icon_file.filename)[-1]
-    icon_file_location = f"static/images/{icon_file_id}{icon_file_extension}"
+    icon_file_location = f"static/images/space/{icon_file_id}{icon_file_extension}"
 
     background_tasks.add_task(write_file, form.icon_file, icon_file_location)
     logger.debug({"info": f"file '{form.icon_file.filename}' saved at '{icon_file_location}'"})
@@ -73,7 +73,7 @@ async def dp_handle_space_update(
         background_tasks.add_task(os.remove, space_draft.icon.url)
       icon_file_id = str(uuid.uuid4())
       icon_file_extension = os.path.splitext(form.icon_file.filename)[-1]
-      icon_file_location = f"static/images/{icon_file_id}{icon_file_extension}"
+      icon_file_location = f"static/images/space/{icon_file_id}{icon_file_extension}"
     
       background_tasks.add_task(write_file, form.icon_file, icon_file_location)
       logger.debug({"info": f"file '{form.icon_file.filename}' saved at '{icon_file_location}'"})

@@ -49,7 +49,7 @@ async def dp_handle_block_create(
     for image_file in form.gallery:
       image_file_id = str(uuid.uuid4())
       image_file_extension = os.path.splitext(image_file.filename)[-1]
-      image_file_location = f"static/images/{image_file_id}{image_file_extension}"
+      image_file_location = f"static/images/block/{image_file_id}{image_file_extension}"
 
       background_tasks.add_task(write_file, image_file, image_file_location)
 
@@ -101,7 +101,7 @@ async def dp_handle_block_update(
         for image_file in form.gallery:
           image_file_id = str(uuid.uuid4())
           image_file_extension = os.path.splitext(image_file.filename)[-1]
-          image_file_location = f"static/images/{image_file_id}{image_file_extension}"
+          image_file_location = f"static/images/block/{image_file_id}{image_file_extension}"
 
           background_tasks.add_task(write_file, image_file, image_file_location)
           logger.debug({"info": f"file '{image_file.filename}' resaved at '{image_file_location}'"})
