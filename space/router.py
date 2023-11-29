@@ -14,6 +14,8 @@ from space.dependencies import dp_space_col, dp_valid_space, dp_handle_space_cre
 from space.service import SpaceService
 from space.schemas import SpaceCreateFormSchema, SpaceCreateSchema, SpaceUpdateFormSchema, SpaceUpdateSchema
 from space.models import SpaceModel
+from block.service import BlockService
+from block.dependencies import dp_block_col
 
 
 space_router = APIRouter(prefix='/space', tags=['Space'])
@@ -92,11 +94,13 @@ async def delete(
   background_tasks: BackgroundTasks,
   space_draft: Annotated[SpaceModel, Depends(dp_valid_space)],
   deleted: Annotated[bool, Depends(dp_handle_space_remove)],
-  space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
+  space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)],
+  block_col: Annotated[AsyncIOMotorCollection, Depends(dp_block_col)]
 ):
-  sucess = await SpaceService(space_col).delete_space(space_draft.id)
+  success = await SpaceService(space_col).delete_space(space_draft.id)
+  success = await BlockService(block_col).remove_space(space_draft.id)
   
-  if not sucess:
+  if not success:
     raise InternalServerException()
 
   return Response(

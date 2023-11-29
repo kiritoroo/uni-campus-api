@@ -148,3 +148,14 @@ class BlockService:
     }
     result = await self.block_col.delete_many(**query)
     return True if result.deleted_count else False
+  
+  async def remove_space(self, space_id: str) -> bool:
+    block_query = {
+      'space_id': ObjectId(space_id)
+    }
+    block_update = {
+      '$unset': {'space_id': 1}
+    }
+    
+    await self.block_col.update_many(block_query, block_update)
+    return True
