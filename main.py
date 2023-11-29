@@ -58,7 +58,7 @@ api_router = APIRouter(prefix='/api')
 async def root(
 ) -> dict:
   """Test Endpoint"""
-  return { "message": "UNI Campus - APIasdf" }
+  return { "message": "UNI Campus - APIs" }
 
 # @app.get("/quit")
 # def iquit():
