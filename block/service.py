@@ -139,3 +139,12 @@ class BlockService:
     }
     result = await self.block_col.delete_one(**query)
     return True if result.deleted_count else False
+
+  async def delete_blocks_by_building_id(self, building_id: str) -> bool:
+    query = {
+        'filter': {
+            'building_id': ObjectId(building_id)
+        }
+    }
+    result = await self.block_col.delete_many(**query)
+    return True if result.deleted_count else False

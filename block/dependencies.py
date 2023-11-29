@@ -42,14 +42,16 @@ async def dp_handle_block_create(
   space_col: Annotated[AsyncIOMotorCollection, Depends(dp_space_col)]
 ) -> BlockCreateSchema:
   valid_building = await BuildingService(building_col).get_building_by_id(form.building_id)
-  valid_space = await SpaceService(space_col).get_space_by_id(form.space_id)
+  
+  if form.space_id:
+    valid_space = await SpaceService(space_col).get_space_by_id(form.space_id)
 
   try:
     gallery_info: List[FileInfoModel] = []
     for image_file in form.gallery:
       image_file_id = str(uuid.uuid4())
       image_file_extension = os.path.splitext(image_file.filename)[-1]
-      image_file_location = f"static/images/block/{image_file_id}{image_file_extension}"
+      image_file_location = f"static/images/{image_file_id}{image_file_extension}"
 
       background_tasks.add_task(write_file, image_file, image_file_location)
 
@@ -68,7 +70,7 @@ async def dp_handle_block_create(
       name=form.name,
       obj_name=form.obj_name,
       building_id=ObjectId(valid_building.id),
-      space_id=ObjectId(valid_space.id),
+      space_id=ObjectId(form.space_id) if form.space_id else None,
       uses=form.uses,
       direction_url=form.direction_url,   
       coordinate=json.loads(form.coordinate),
@@ -101,7 +103,7 @@ async def dp_handle_block_update(
         for image_file in form.gallery:
           image_file_id = str(uuid.uuid4())
           image_file_extension = os.path.splitext(image_file.filename)[-1]
-          image_file_location = f"static/images/block/{image_file_id}{image_file_extension}"
+          image_file_location = f"static/images/{image_file_id}{image_file_extension}"
 
           background_tasks.add_task(write_file, image_file, image_file_location)
           logger.debug({"info": f"file '{image_file.filename}' resaved at '{image_file_location}'"})

@@ -30,7 +30,7 @@ class BlockCreateSchema(BaseModel):
   name: str
   obj_name: str
   building_id: ObjectId
-  space_id: ObjectId
+  space_id: Optional[ObjectId]
   uses: str
   direction_url: str
   coordinate: CoordinateModel
@@ -59,7 +59,7 @@ class BlockCreateFormSchema(BaseModel):
   name: str
   obj_name: str
   building_id: str
-  space_id: str
+  space_id: Optional[str]
   uses: str
   direction_url: str
   coordinate: str
@@ -71,7 +71,7 @@ class BlockCreateFormSchema(BaseModel):
     name: str = Form(...),
     obj_name: str = Form(...),
     building_id: str = Form(...),
-    space_id: str = Form(...),
+    space_id: str = Form(None),
     uses: str = Form(...),
     direction_url: str = Form(...),
     coordinate: str = Form(...),
