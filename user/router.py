@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Request, Response, status
 from motor.motor_asyncio import AsyncIOMotorCollection
 from typing_extensions import Annotated
 from constants import TokenType
@@ -54,6 +54,7 @@ async def signup(
   
 @user_router.post('/login', **cst.LOGIN_ENDPOINT_DEFINITION)
 async def login(
+  request: Request,
   form: Annotated[UserLoginFormSchema, Depends()],
   user_login_data: Annotated[UserModel, Depends(dp_handle_login)],
   dp_token_service: Annotated[TokenService, Depends(dp_token_service)],
