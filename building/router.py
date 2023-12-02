@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, status, Depends, Path, Query
+from fastapi import APIRouter, Request, Response, status, Depends, Path, Query
 from motor.motor_asyncio import AsyncIOMotorCollection
 from pydantic.json import pydantic_encoder
 from starlette.background import BackgroundTasks
@@ -6,6 +6,7 @@ from typing_extensions import Annotated
 import json
 
 from core.log import logger
+from core.ratelimit import rate_limited
 from exceptions import InternalServerException
 from dependencies import dp_auth, dp_admin
 from models import ClaimsModel
@@ -22,6 +23,7 @@ building_router = APIRouter(prefix='/building', tags=['Building'])
 
 @building_router.get('/', **cst.GETS_ENDPOINT_DEFINITION)
 async def gets(
+  request: Request,
   building_col: Annotated[AsyncIOMotorCollection, Depends(dp_building_col)],
   populate: Annotated[bool | None, Query()] = None
 ):

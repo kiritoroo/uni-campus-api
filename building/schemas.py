@@ -10,8 +10,6 @@ from block.schemas import BlockPopulateSchema
 class BuildingPopulateSchema(BaseModel):
   id: Optional[PyObjectId] = Field(alias="_id", default=None)
   name: str = None
-  space_id: Optional[str] = None
-  uses: Optional[str] = None
   position: Optional[Vector3Model] = None
   rotation: Optional[Vector3Model] = None
   scale: Optional[Vector3Model] = None

@@ -97,7 +97,7 @@ app.include_router(api_router)
 if __name__ == "__main__":
   uvicorn.run(
     "main:app",
-    # host=os.environ.get('DOMAIN'),
+    host=os.environ.get('DOMAIN'),
     port=int(os.environ.get('PORT')),
     log_level="info",
     reload=True
