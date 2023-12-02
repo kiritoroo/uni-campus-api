@@ -119,7 +119,7 @@ class BlockService:
   async def update_block(self, draft: BlockModel, data: BlockUpdateSchema) -> BlockModel:
     update_data = dict(
       **data.model_dump(exclude_none=True),
-      **{k: v for k, v in draft.model_dump(exclude_none=True, exclude=['id', 'updated_at']).items() if k not in data.model_dump()},
+      **{k: v for k, v in draft.model_dump(exclude_none=True, exclude=['id', 'obj_name','building_id', 'updated_at']).items() if k not in data.model_dump()},
       updated_at=datetime.utcnow()
     )
 
