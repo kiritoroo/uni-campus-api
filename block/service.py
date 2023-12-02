@@ -37,7 +37,10 @@ class BlockService:
         }
       },
       {
-        '$unwind': '$space'
+        '$unwind': {
+          'path': '$space',
+          'preserveNullAndEmptyArrays': True
+        }
       }
     ]
     
@@ -89,7 +92,10 @@ class BlockService:
         }
       },
       {
-        '$unwind': '$space'
+        '$unwind': {
+          'path': '$space',
+          'preserveNullAndEmptyArrays': True
+        }
       }
     ]).to_list(length=None)
 
