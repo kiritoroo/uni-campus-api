@@ -15,6 +15,7 @@ class BuildingPopulateSchema(BaseModel):
   scale: Optional[Vector3Model] = None
   model_3d: Optional[FileInfoModel] = None
   preview_img: Optional[FileInfoModel] = None
+  order: Optional[int] = None
   is_publish: Optional[bool] = None
   blocks: List[BlockPopulateSchema]
   created_at: Optional[datetime] = None
@@ -32,6 +33,7 @@ class BuildingCreateSchema(BaseModel):
   scale:  Vector3Model
   model_3d: FileInfoModel
   preview_img: FileInfoModel
+  order: int
   
 class BuildingUpdateSchema(BaseModel):
   name: Optional[str]
@@ -40,6 +42,7 @@ class BuildingUpdateSchema(BaseModel):
   scale:  Optional[Vector3Model]
   model_3d: Optional[FileInfoModel]
   preview_img: Optional[FileInfoModel]
+  order: Optional[int]
   is_publish: Optional[bool]
 
 class BuildingCreateFormSchema(BaseModel):
@@ -49,6 +52,7 @@ class BuildingCreateFormSchema(BaseModel):
   scale:  str
   model_file: UploadFile
   preview_file: UploadFile
+  order: int
   
   def __init__(
     self,
@@ -57,7 +61,8 @@ class BuildingCreateFormSchema(BaseModel):
     rotation: str = Form(...),
     scale:  str = Form(...),
     model_file: UploadFile = File(),
-    preview_file: UploadFile = File()
+    preview_file: UploadFile = File(),
+    order: int = Form(...)
   ):
     return super().__init__(
       name=name,
@@ -66,6 +71,7 @@ class BuildingCreateFormSchema(BaseModel):
       scale=scale,
       model_file=model_file,
       preview_file=preview_file,
+      order=order
     )
     
 class BuildingUpdateFormSchema(BaseModel):
@@ -76,6 +82,7 @@ class BuildingUpdateFormSchema(BaseModel):
   model_file: Optional[UploadFile]
   preview_file: Optional[UploadFile]
   is_publish: Optional[bool]
+  order: Optional[int]
   
   def __init__(
     self,
@@ -85,7 +92,8 @@ class BuildingUpdateFormSchema(BaseModel):
     scale:  str = Form(None),
     model_file: UploadFile = None,
     preview_file: UploadFile = None,
-    is_publish: bool = Form(None)
+    is_publish: bool = Form(None),
+    order: int = Form(None)
   ):
     return super().__init__(
       name=name,
@@ -94,6 +102,7 @@ class BuildingUpdateFormSchema(BaseModel):
       scale=scale,
       model_file=model_file,
       preview_file=preview_file,
-      is_publish=is_publish
+      is_publish=is_publish,
+      order=order
     )
     

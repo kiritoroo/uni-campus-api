@@ -13,6 +13,7 @@ class BuildingModel(BaseModel):
   scale: Optional[Vector3Model] = None
   model_3d: Optional[FileInfoModel] = None
   preview_img: Optional[FileInfoModel] = None
+  order: Optional[int] = None
   is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
