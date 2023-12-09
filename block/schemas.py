@@ -18,6 +18,7 @@ class BlockPopulateSchema(BaseModel):
   coordinate: Optional[CoordinateModel] = None
   marker_position: Optional[Vector3Model] = None
   gallery: Optional[List[FileInfoModel]] = None
+  order: Optional[int] = None
   is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
@@ -36,6 +37,7 @@ class BlockCreateSchema(BaseModel):
   coordinate: CoordinateModel
   marker_position: Vector3Model
   gallery: List[FileInfoModel]
+  order: int
   
   model_config = ConfigDict(
     arbitrary_types_allowed=True,
@@ -49,6 +51,7 @@ class BlockUpdateSchema(BaseModel):
   coordinate: Optional[CoordinateModel]
   marker_position: Optional[Vector3Model]
   gallery: Optional[List[FileInfoModel]]
+  order: Optional[int]
   is_publish: Optional[bool]
 
   model_config = ConfigDict(
@@ -65,6 +68,7 @@ class BlockCreateFormSchema(BaseModel):
   coordinate: str
   marker_position: str
   gallery: List[UploadFile]
+  order: int
   
   def __init__(
     self,
@@ -76,7 +80,8 @@ class BlockCreateFormSchema(BaseModel):
     direction_url: str = Form(...),
     coordinate: str = Form(...),
     marker_position: str = Form(...),
-    gallery: List[UploadFile] = list[File()]
+    gallery: List[UploadFile] = list[File()],
+    order: int = Form(...)
   ):
     return super().__init__(
       name=name,
@@ -87,7 +92,8 @@ class BlockCreateFormSchema(BaseModel):
       direction_url=direction_url,
       coordinate=coordinate,
       marker_position=marker_position,
-      gallery=gallery
+      gallery=gallery,
+      order=order
     )
   
 class BlockUpdateFormSchema(BaseModel):
@@ -98,6 +104,7 @@ class BlockUpdateFormSchema(BaseModel):
   coordinate: Optional[str]
   marker_position: Optional[str]
   gallery: Optional[List[UploadFile]]
+  order: Optional[int]
   is_publish: Optional[bool]
   
   def __init__(
@@ -109,6 +116,7 @@ class BlockUpdateFormSchema(BaseModel):
     coordinate: str = Form(None),
     marker_position: str = Form(None),
     gallery: List[UploadFile] = None,
+    order: str = Form(None),
     is_publish: bool = Form(None)
   ):
     return super().__init__(
@@ -119,5 +127,6 @@ class BlockUpdateFormSchema(BaseModel):
       coordinate=coordinate,
       marker_position=marker_position,
       gallery=gallery,
+      order=order,
       is_publish=is_publish
     )

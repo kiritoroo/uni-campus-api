@@ -17,6 +17,7 @@ class BlockModel(BaseModel):
   coordinate: Optional[CoordinateModel] = None
   marker_position: Optional[Vector3Model] = None
   gallery: Optional[list[FileInfoModel]] = None
+  order: Optional[int] = None
   is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
