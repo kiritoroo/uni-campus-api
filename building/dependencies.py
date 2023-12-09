@@ -77,7 +77,8 @@ async def dp_handle_building_create(
         extension=preview_file_extension,
         length=form.preview_file.size,
         content_type=form.preview_file.content_type
-      )
+      ),
+      order=form.order
     )
     
     return schema
@@ -144,6 +145,7 @@ async def dp_handle_building_update(
         length=form.preview_file.size,
         content_type=form.preview_file.content_type
       ) if form.preview_file else None,
+      order=form.order,
       is_publish=form.is_publish
     )
     

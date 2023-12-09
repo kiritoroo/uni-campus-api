@@ -75,7 +75,8 @@ async def dp_handle_block_create(
       direction_url=form.direction_url,   
       coordinate=json.loads(form.coordinate),
       marker_position=json.loads(form.marker_position),
-      gallery=gallery_info
+      gallery=gallery_info,
+      order=form.order
     )
     
     return schema
@@ -126,6 +127,7 @@ async def dp_handle_block_update(
       coordinate=json.loads(form.coordinate) if form.coordinate else None,
       marker_position=json.loads(form.marker_position) if form.marker_position else None,
       gallery=new_gallery if len(new_gallery) > 0 else None,
+      order=form.order,
       is_publish=form.is_publish
     )
     
