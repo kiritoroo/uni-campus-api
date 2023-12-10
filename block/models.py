@@ -18,6 +18,7 @@ class BlockModel(BaseModel):
   marker_position: Optional[Vector3Model] = None
   gallery: Optional[list[FileInfoModel]] = None
   order: Optional[int] = None
+  slug: Optional[str] = None
   is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None

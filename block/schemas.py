@@ -19,6 +19,7 @@ class BlockPopulateSchema(BaseModel):
   marker_position: Optional[Vector3Model] = None
   gallery: Optional[List[FileInfoModel]] = None
   order: Optional[int] = None
+  slug: Optional[str] = None
   is_publish: Optional[bool] = None
   created_at: Optional[datetime] = None
   updated_at: Optional[datetime] = None
@@ -38,6 +39,7 @@ class BlockCreateSchema(BaseModel):
   marker_position: Vector3Model
   gallery: List[FileInfoModel]
   order: int
+  slug: str
   
   model_config = ConfigDict(
     arbitrary_types_allowed=True,
@@ -52,6 +54,7 @@ class BlockUpdateSchema(BaseModel):
   marker_position: Optional[Vector3Model]
   gallery: Optional[List[FileInfoModel]]
   order: Optional[int]
+  slug: Optional[str]
   is_publish: Optional[bool]
 
   model_config = ConfigDict(
@@ -69,6 +72,7 @@ class BlockCreateFormSchema(BaseModel):
   marker_position: str
   gallery: List[UploadFile]
   order: int
+  slug: str
   
   def __init__(
     self,
@@ -81,7 +85,8 @@ class BlockCreateFormSchema(BaseModel):
     coordinate: str = Form(...),
     marker_position: str = Form(...),
     gallery: List[UploadFile] = list[File()],
-    order: int = Form(...)
+    order: int = Form(...),
+    slug: str = Form(...)
   ):
     return super().__init__(
       name=name,
@@ -93,7 +98,8 @@ class BlockCreateFormSchema(BaseModel):
       coordinate=coordinate,
       marker_position=marker_position,
       gallery=gallery,
-      order=order
+      order=order,
+      slug=slug
     )
   
 class BlockUpdateFormSchema(BaseModel):
@@ -105,6 +111,7 @@ class BlockUpdateFormSchema(BaseModel):
   marker_position: Optional[str]
   gallery: Optional[List[UploadFile]]
   order: Optional[int]
+  slug: Optional[str]
   is_publish: Optional[bool]
   
   def __init__(
@@ -117,6 +124,7 @@ class BlockUpdateFormSchema(BaseModel):
     marker_position: str = Form(None),
     gallery: List[UploadFile] = None,
     order: str = Form(None),
+    slug: str = Form(None),
     is_publish: bool = Form(None)
   ):
     return super().__init__(
@@ -128,5 +136,6 @@ class BlockUpdateFormSchema(BaseModel):
       marker_position=marker_position,
       gallery=gallery,
       order=order,
+      slug=slug,
       is_publish=is_publish
     )
