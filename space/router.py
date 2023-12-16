@@ -26,7 +26,6 @@ async def gets(
 ):
   res_spaces = await SpaceService(space_col).list_space()
   res_spaces_json = json.dumps(res_spaces, default=pydantic_encoder)
-  logger.debug(res_spaces_json)
 
   return Response(
     content=res_spaces_json,
@@ -39,7 +38,6 @@ async def get(
   space: Annotated[SpaceModel, Depends(dp_valid_space)]
 ):
   space_json = json.dumps(space, default=pydantic_encoder)
-  logger.debug(space_json)
 
   return Response(
     content=space_json,
@@ -57,7 +55,6 @@ async def post(
 ):
   res_space = await SpaceService(space_col).create_space(space_create_data)
   res_space_json = json.dumps(res_space, default=pydantic_encoder)
-  logger.debug(res_space_json)
   
   return Response(
     content=res_space_json,
@@ -78,7 +75,6 @@ async def put(
 ):
   res_space = await SpaceService(space_col).update_space(space_draft, space_update_data)
   res_space_json = json.dumps(res_space, default=pydantic_encoder)
-  logger.debug(res_space_json)
 
   return Response(
     content=res_space_json,

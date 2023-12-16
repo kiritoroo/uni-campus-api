@@ -34,7 +34,6 @@ async def gets(
   else:
     res_buildings = await BuildingService(building_col).list_buildings()
   res_buildings_json = json.dumps(res_buildings, default=pydantic_encoder)
-  logger.debug(res_buildings_json)
 
   return Response(
     content=res_buildings_json,
@@ -54,7 +53,6 @@ async def get(
   else:
     res_building = await BuildingService(building_col).get_building_by_id(id)
   res_building_json = json.dumps(res_building, default=pydantic_encoder)
-  logger.debug(res_building_json)
 
   return Response(
     content=res_building_json,
@@ -72,7 +70,6 @@ async def post(
 ):
   res_building = await BuildingService(building_col).create_building(building_create_data)
   res_building_json = json.dumps(res_building, default=pydantic_encoder)
-  logger.debug(res_building_json)
 
   return Response(
     content=res_building_json,
@@ -93,7 +90,6 @@ async def put(
 ):
   res_building = await BuildingService(building_col).update_building(building_draft, building_update_data)
   res_building_json = json.dumps(res_building, default=pydantic_encoder)
-  logger.debug(res_building_json)
   
   return Response(
     content=res_building_json,
