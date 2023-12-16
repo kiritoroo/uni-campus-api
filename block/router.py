@@ -33,7 +33,6 @@ async def gets(
   else:
     res_blocks = await BlockService(block_col).list_blocks(building_id)
   res_blocks_json = json.dumps(res_blocks, default=pydantic_encoder)
-  logger.debug(res_blocks_json)
 
   return Response(
     content=res_blocks_json,
@@ -52,7 +51,6 @@ async def get(
   else:
     res_block = await BlockService(block_col).get_block_by_id(id)
   res_block_json = json.dumps(res_block, default=pydantic_encoder)
-  logger.debug(res_block_json)
   
   return Response(
     content=res_block_json,
@@ -72,7 +70,6 @@ async def post(
 ):
   res_block = await BlockService(block_col).create_block(block_create_data)
   res_block_json = json.dumps(res_block, default=pydantic_encoder)
-  logger.debug(res_block_json)
 
   return Response(
     content=res_block_json,
@@ -94,7 +91,6 @@ async def put(
 ):
   res_block = await BlockService(block_col).update_block(block_draft, block_update_data)
   res_block_json = json.dumps(res_block, default=pydantic_encoder)
-  logger.debug(res_block_json)
   
   return Response(
     content=res_block_json,

@@ -95,7 +95,6 @@ async def dp_handle_space_update(
       slug=form.slug,
       is_publish=form.is_publish
     )
-    logger.info(schema)
     return schema
   except Exception as e:
     logger.error(e)

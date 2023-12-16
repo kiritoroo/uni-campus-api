@@ -45,7 +45,6 @@ async def signup(
   )
   
   res_json = json.dumps(dict({'access_token': token}))
-  logger.debug(res_json)
 
   return Response(
     content=res_json,
@@ -72,7 +71,6 @@ async def login(
   )
   
   res_json = json.dumps(dict({'access_token': token}))
-  logger.debug(res_json)
 
   return Response(
     content=res_json,
