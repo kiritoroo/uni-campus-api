@@ -51,7 +51,8 @@ async def dp_handle_space_create(
         length=form.icon_file.size,
         content_type=form.icon_file.content_type
       ),
-      order=form.order
+      order=form.order,
+      slug=form.slug
     )
 
     return schema
@@ -91,6 +92,7 @@ async def dp_handle_space_update(
         content_type=form.icon_file.content_type
       ) if form.icon_file else None,
       order=form.order,
+      slug=form.slug,
       is_publish=form.is_publish
     )
     logger.info(schema)
